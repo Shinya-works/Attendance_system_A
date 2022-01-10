@@ -1,0 +1,16 @@
+@import "bootstrap-sprockets";
+
+@import "bootstrap";
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1;
+}
+
+h1 {
+  font-size: 3em;
+  letter-spacing: -2px;
+}
+
+.sign_up_info {
+  margin-top: 10px;
+}
