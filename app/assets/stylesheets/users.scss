@@ -1,0 +1,25 @@
+@import "bootstrap-sprockets";
+
+@import "bootstrap";
+
+// 共通
+.title_h1 {
+  font-size: 3em;
+  letter-spacing: -2px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+// ユーザー新規登録ページ
+.user-table {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.label-user--create {
+  margin-top: 5px;
+}
+
+.btn-user--create {
+  margin-top: 10px;
+}
