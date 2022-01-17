@@ -1,0 +1,25 @@
+<% provide(:title, 'index') %>
+
+<div class="container">
+  <h1 class="title_h1">ユーザー一覧ページ</h1>
+  
+
+  <div class="col-md-10 col-md-offset-1">
+    <%= will_paginate %>
+    <table class="table table-condensed table-hover" id="table-users">
+      <% @users.each do |user| %>
+        <tr>
+          <td><%= link_to user.name, user %></td>
+          <td><% if current_user.admin? %>
+            <%= link_to "編集", '#', class: "btn btn-primaly" %>
+            <%= link_to "削除", user, method: :delete,
+            data: { confirm: "削除してもよろしいですか。"},
+            class: "btn btn-default" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <%= will_paginate %>
+  </div>
+</div>
