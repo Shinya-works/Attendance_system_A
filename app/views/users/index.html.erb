@@ -1,4 +1,6 @@
 <% provide(:title, 'index') %>
+<% provide(:class_text, 'index--user--edit') %>
+<% provide(:btn_text, '編集する') %>
 
 <div class="container">
   <h1 class="title_h1">ユーザー一覧ページ</h1>
@@ -10,14 +12,59 @@
       <% @users.each do |user| %>
         <tr>
           <td><%= link_to user.name, user %></td>
-          <td><% if current_user.admin? %>
-            <%= link_to "編集", '#', class: "btn btn-primaly" %>
+          <td>
             <%= link_to "削除", user, method: :delete,
             data: { confirm: "削除してもよろしいですか。"},
             class: "btn btn-default" %>
-            <% end %>
           </td>
-        </tr>
+          <td>
+          <div class="accordion">
+            <div class="card">
+              <div class="card-header" id="header-user-index">
+                <%= link_to "編集", '#', class: "btn btn-primaly ", data-toggle="collapse",
+                        data-target="#card-user-index", aria-expanded="true",
+                        aria-controls="card-user-index" %>
+              </div>
+              <div id="card-user-index" class="collapse"
+                      aria-labelledby="header-user-index" data-parent="#accordion">
+                <div class="card-body">
+                  <%= form_with(model: @user, url: update_index_user_info_path(@user), local: true, method: :patch) do |f| %>
+                    <%= render 'shared/error_messages' %>
+                    
+                    <%= f.label :name, class: "label-#{yield(:class_text)}" %>
+                    <%= f.text_field :name, class: "form-control" %>
+                    
+                    <%= f.label :email, class: "label-#{yield(:class_text)}" %>
+                    <%= f.email_field :email, class: "form-control" %>
+                    
+                    <%= f.label :department, class: "label-#{yield(:class_text)}" %>
+                    <%= f.text_field :department, class: "form-control" %>
+                    
+                    <%= f.label :password, class: "label-#{yield(:class_text)}" %>
+                    <%= f.password_field :password, class: "form-control" %>
+
+                    <%= f.label :employee_number, class: "label-#{yield(:class_text)}" %>
+                    <%= f.password_field :employee_number, class: "form-control" %>
+
+                    <%= f.label :uid, class: "label-#{yield(:class_text)}" %>
+                    <%= f.password_field :uid, class: "form-control" %>
+
+                    <%= f.label :basic_work_time, class: "label-#{yield(:class_text)}" %>
+                    <%= f.password_field :basic_work_time, class: "form-control" %>
+
+                    <%= f.label :designated_work_start_time, class: "label-#{yield(:class_text)}" %>
+                    <%= f.password_field :designated_work_start_time, class: "form-control" %>
+
+                    <%= f.label :designated_work_end_time, class: "label-#{yield(:class_text)}" %>
+                    <%= f.password_field :designated_work_end_time, class: "form-control" %>
+                    
+                    <%= f.submit yield(:btn_text), class: "btn btn-primary btn-block label-#{yield(:class_text)}" %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          </td>
       <% end %>
     </table>
     <%= will_paginate %>
