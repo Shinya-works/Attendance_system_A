@@ -33,3 +33,10 @@
 .btn-login {
   margin-top: 10px;
 }
+
+// 勤怠表示ページ
+
+.br::before {
+  content: "\A";
+  white-space: pre;
+}
