@@ -16,5 +16,6 @@ Rails.application.routes.draw do
       get 'attendances/list_of_employees'
     end
   end
+  resources :bases, except: [:show]
 
 end

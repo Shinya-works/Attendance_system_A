@@ -1,0 +1,30 @@
+<% provide(:title, 'Base_index') %>
+
+<div class="container">
+  <h1 class="title_h1">拠点一覧</h1>
+  <table class="table_striped table_bordered">
+    <tbody>
+      <% @bases.each do |base| %>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>拠点番号</td>
+          <td>拠点名</td>
+          <td>勤怠種類</td>
+        </tr>
+        <tr>
+          <td><%= link_to "修正", '#', class: "btn btn_primary" %></td>
+          <td>
+            <%= link_to "削除", base, method: :delete,
+            data: { confirm: "削除してもよろしいですか。"},
+            class: "btn btn-primary" %>
+          </td>
+          <td><% base.number%></td>
+          <td><% base.name%></td>
+          <td><% base.time_type%></td>
+        </tr>
+      <% end %>
+      <%= link_to "拠点情報追加", '#', class: "btn btn_primary" %>
+    </tbody>
+  </table>
+</div>
