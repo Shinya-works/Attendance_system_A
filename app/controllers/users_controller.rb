@@ -42,6 +42,10 @@ class UsersController < ApplicationController
     end
   end
 
+  def list_of_employees
+    @users = User.all.includes(:attendances)
+  end
+
   private
 
     def user_params

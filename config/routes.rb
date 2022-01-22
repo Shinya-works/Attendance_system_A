@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :users do
     member do
       patch 'update_index'
+      get 'attendances/list_of_employees'
     end
   end
 
