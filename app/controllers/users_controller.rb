@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:index, :edit, :update, :update_index_user]
+  before_action :set_user, only: [:index, :show, :edit, :update, :update_index_user]
 
   def index
     @users = User.paginate(page: params[:page], per_page: 20)
@@ -13,6 +13,9 @@ class UsersController < ApplicationController
       flash[:danger] = "#{@user.name}の情報の更新に失敗しました。" + @user.errors.full_messages.join("、")
       render :index
     end
+  end
+
+  def show
   end
 
   def new
