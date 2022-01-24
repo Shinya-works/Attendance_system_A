@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'attendances/edit'
+
   get 'sessions/new'
 
   root 'static_pages#top'
@@ -14,7 +16,10 @@ Rails.application.routes.draw do
     member do
       patch 'update_index'
       get 'attendances/list_of_employees'
+      get 'attendances/edit_one_month'
+      patch 'attendances/update_one_month'
     end
+    resources :attendances, only: :update
   end
   resources :bases, except: [:show]
 
