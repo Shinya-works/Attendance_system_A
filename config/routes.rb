@@ -6,9 +6,11 @@ Rails.application.routes.draw do
   root 'static_pages#top'
   get '/signup', to: 'users#new'
 
-  get 'login', to: 'sessions#new'
+  get    'login', to: 'sessions#new'
   post   '/login', to: 'sessions#create'
   delete '/logout', to: 'sessions#destroy'
+
+  get 'edit_basic_work_info', to: 'users#edit_basic_work_info'
 
   resources :users do
     member do

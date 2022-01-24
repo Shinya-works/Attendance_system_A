@@ -46,6 +46,9 @@ class UsersController < ApplicationController
     @users = User.all.includes(:attendances)
   end
 
+  def edit_basic_work_info
+  end
+
   private
 
     def user_params
