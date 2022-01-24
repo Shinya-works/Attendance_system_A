@@ -22,5 +22,4 @@ Rails.application.routes.draw do
     resources :attendances, only: :update
   end
   resources :bases, except: [:show]
-
 end
