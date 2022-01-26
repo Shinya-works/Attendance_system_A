@@ -48,9 +48,9 @@ ActiveRecord::Schema.define(version: 20220122171419) do
     t.boolean "superiors", default: false
     t.integer "employee_number"
     t.integer "uid"
-    t.time "basic_work_time"
-    t.time "designated_work_start_time"
-    t.time "designated_work_end_time"
+    t.time "basic_work_time", default: "2000-01-01 23:00:00"
+    t.time "designated_work_start_time", default: "2000-01-01 00:00:00"
+    t.time "designated_work_end_time", default: "2000-01-01 08:00:00"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
