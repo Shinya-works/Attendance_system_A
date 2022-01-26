@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
       log_in user
       # ログイン時にチェックボックスのないようによって永続セッションを保存を決定
       params[:session][:remember_me] == '1' ? remember(user) : forget(user)
-      redirect_back_or user
+      redirect_back_or
     else
       flash.now[:danger] = '認証に失敗しました。'
       render :new

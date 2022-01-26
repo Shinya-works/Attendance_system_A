@@ -56,9 +56,17 @@ module SessionsHelper
     !current_user.nil?
   end
   
+  def set_default_url
+    if current_user.admin
+      users_url
+    else
+      current_user
+    end
+  end
+  
   # 記憶しているURL(またはデフォルトURL)にリダイレクトします。
-  def redirect_back_or(default_url)
-    redirect_to(session[:forwarding_url] || default_url)
+  def redirect_back_or
+    redirect_to(session[:forwarding_url] || set_default_url)
     session.delete(:forwarding_url)
   end
   
