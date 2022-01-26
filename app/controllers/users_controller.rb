@@ -53,10 +53,6 @@ before_action :set_one_month, only: :show
     end
   end
 
-  def list_of_employees
-    @users = User.all.includes(:attendances)
-  end
-
   def edit_basic_work_info
   end
 

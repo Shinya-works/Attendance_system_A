@@ -2,11 +2,11 @@
 
 <div class="container">
   <h1 class="title_h1">出勤社員一覧</h1>
-  <table class="table_bordered table_striped">
+  <table class="table table-bordered table-striped">
     <tbody>
       <tr>
-        <td style="whidth: 30%;">社員番号</td>
-        <td style="whidth: 35%;">名前</td>
+        <th style="width :30%;">社員番号</th>
+        <th style="width :35%;">名前</th>
       </tr>
       <% @users.each do |user| %>
         <% user.attendances.each do |attendance| %>
