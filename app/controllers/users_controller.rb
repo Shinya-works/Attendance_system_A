@@ -53,6 +53,12 @@ before_action :set_one_month, only: :show
     end
   end
 
+  def destroy
+    @user.destroy
+    flash[:success] = "#{@user.name}のデータを削除しました。"
+    redirect_to users_url
+  end
+
   def edit_basic_work_info
   end
 

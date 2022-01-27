@@ -8,7 +8,7 @@ class BaseController < ApplicationController
     @base = Bases.new
   end
 
-  def def create
+  def create
     if @base.save
       flash[:success] = "拠点情報の作成に成功しました"
       redirect_to bases_path
@@ -32,7 +32,16 @@ class BaseController < ApplicationController
     end
   end
 
-  def delete
+  def destroy
+    if @object.destroy
+      flash[:success] = 'Object was successfully deleted.'
+      redirect_to objects_url
+    else
+      flash[:error] = 'Something went wrong'
+      redirect_to objects_url
+    end
   end
+  
+  
   
 end

@@ -52,7 +52,6 @@ class AttendancesController < ApplicationController
 
   def list_of_employees
     @users = User.all.includes(:attendances)
-    (byebug)
   end
   
   private
