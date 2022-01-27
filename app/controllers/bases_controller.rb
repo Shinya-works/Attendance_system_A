@@ -1,4 +1,4 @@
-class BaseController < ApplicationController
+class BasesController < ApplicationController
   before_action :set_base, only: [:edit, :update, :destroy]  
   before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_work_info]  
   before_action :admin_or_correct_user, only: :show
@@ -9,13 +9,14 @@ class BaseController < ApplicationController
   end
 
   def new
-    @base = Bases.new
+    @base = Base.new
   end
 
   def create
+    @base = Base.new(base_params)
     if @base.save
       flash[:success] = "拠点情報の作成に成功しました"
-      redirect_to bases_path
+      redirect_to bases_url
     else
       flash[:danger] = "拠点情報の作成に失敗しました"
       render 'new'
@@ -27,9 +28,9 @@ class BaseController < ApplicationController
   end
 
   def update
-    if @base.update_attributes(base_params])
+    if @base.update_attributes(base_params)
       flash[:success] = "拠点情報の更新に成功しました"
-      redirect_to @object
+      redirect_to bases_url
     else
       flash[:danger] = "拠点情報の更新に失敗しました"
       render 'edit'
@@ -38,7 +39,7 @@ class BaseController < ApplicationController
 
   def destroy
     @base.destroy
-    flash[:success] = "#{@base.name}のデータを削除しました。"
+    flash[:success] = "#{@base.base_name}のデータを削除しました。"
     redirect_to bases_url
   end
 
@@ -49,7 +50,7 @@ class BaseController < ApplicationController
     end
 
     def base_params
-      params.require(:base).parmit(:base_number, :base_name, :time_type)
+      params.require(:base).permit(:base_number, :base_name, :time_type)
     end
   
   
