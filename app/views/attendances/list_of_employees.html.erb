@@ -12,7 +12,7 @@
         <% user.attendances.each do |attendance| %>
           <% if (Date.current == attendance.worked_on) &&
             attendance.started_at != nil &&
-            attendance.finished_at = nil %>
+            attendance.finished_at == nil %>
             <tr>
               <td><%= user.employee_number %></td>
               <td><%= user.name %></td>
