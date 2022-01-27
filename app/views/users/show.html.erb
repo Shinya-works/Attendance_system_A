@@ -30,6 +30,7 @@
   <% if current_user.superiors %>
     <%= link_to "【所属長承認申請のお知らせ】", new_basis_path,
       remote: true, class: "btn btn-primary btn-lg" %>
+    <% end %>
   <div class="btn-edit-attendances">
     <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   </div>
