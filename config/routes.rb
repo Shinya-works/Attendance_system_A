@@ -18,6 +18,11 @@ Rails.application.routes.draw do
       get 'attendances/list_of_employees'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
+      get 'attendances/attendances_authentication'
+      get 'attendances/edit_attendances_authentication'
+      get 'attendances/overwork_authentication'
+      get 'attendances/overwork_application'
+      get 'attendances/attendances_log'
     end
     resources :attendances, only: :update
   end
