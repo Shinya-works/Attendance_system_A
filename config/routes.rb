@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       get 'attendances/edit_attendances_authentication'
       get 'attendances/overwork_authentication'
       get 'attendances/overwork_application'
+      patch 'attendances/update_overwork'
       get 'attendances/attendances_log'
     end
     resources :attendances, only: :update
