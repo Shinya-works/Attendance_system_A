@@ -23,6 +23,9 @@ ActiveRecord::Schema.define(version: 20220122171419) do
     t.time "expected_end_time"
     t.time "overtime"
     t.string "business_processing_details"
+    t.string "authentication_user"
+    t.time "authentication_day"
+    t.string "authentication_state"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

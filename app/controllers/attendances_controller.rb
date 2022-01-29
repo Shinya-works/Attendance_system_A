@@ -53,10 +53,26 @@ class AttendancesController < ApplicationController
   def list_of_employees
     @users = User.all.includes(:attendances)
   end
+
+  def overwork_application
+
+  end
+
+  def update_overwork
+
+  end
   
   private
     
     def attendances_params
       params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :expected_end_time, :overtime, :business_processing_details])[:attendances]
+    end
+
+    def set_attendace
+      @attendance = Attendance.find(params[:id])
+    end
+
+    def set_attendances
+      @attendances = Attendances.all
     end
 end
