@@ -3,7 +3,8 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :set_one_month, only: :edit_one_month
+  before_action :set_one_month, only: :edit_one_monthset_attendances
+  before_action :set_attendace, only: :overwork_application
   
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -55,17 +56,21 @@ class AttendancesController < ApplicationController
   end
 
   def overwork_application
-
   end
 
   def update_overwork
-
+    if @attendance.update_attributes(attendance_params)
+      redirect_to current_user
+    else
+      render :overwork_application
+    end
   end
   
   private
     
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :expected_end_time, :overtime, :business_processing_details])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :expected_end_time,
+        :overtime, :business_processing_details, :authentication_user, :authentication_day, :authentication_state])[:attendances]
     end
 
     def set_attendace
