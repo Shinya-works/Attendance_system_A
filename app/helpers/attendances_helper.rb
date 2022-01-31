@@ -29,4 +29,8 @@ module AttendancesHelper
     end
     return attendances
   end
+
+  def superiors_user(users)
+    @users = users.where(superiors: true)
+  end
 end

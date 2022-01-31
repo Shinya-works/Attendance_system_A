@@ -11,6 +11,10 @@ class ApplicationController < ActionController::Base
   def set_user
     @user = User.find(params[:id])
   end
+
+  def set_users
+    @users = User.all
+  end
     
     # ログイン済みのユーザーか確認
   def logged_in_user
