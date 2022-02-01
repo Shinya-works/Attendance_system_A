@@ -2,17 +2,16 @@ class AttendancesController < ApplicationController
   include AttendancesHelper
   before_action :set_user, only: [:edit_one_month, :update_one_month]
   before_action :set_users, only: :overwork_application
+  before_action :set_user_id, only: [:update, :overwork_application, :update_overwork]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_monthset_attendances
-  before_action :set_attendace, only: [:overwork_application, :update_overwork]
+  before_action :set_attendace, only: [:update, :overwork_application, :update_overwork]
   
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
   def update
-    @user = User.find(params[:user_id])
-    @attendance = Attendance.find(params[:id])
     # 出勤時間が未登録であることを判定します。
     if @attendance.started_at.nil?
       if @attendance.update_attributes(started_at: Time.current.change(sec: 0))
@@ -82,7 +81,7 @@ class AttendancesController < ApplicationController
       @attendances = Attendances.all
     end
 
-    def set_sorce_user
+    def set_user_id
       @user = User.find(params[:user_id])
     end
 end
