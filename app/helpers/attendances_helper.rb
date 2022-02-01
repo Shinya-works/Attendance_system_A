@@ -30,7 +30,15 @@ module AttendancesHelper
     return attendances
   end
 
-  def superiors_user(users)
+  def superiors_users(users)
     @users = users.where(superiors: true)
+  end
+
+  def superiors_users_arry(users)
+    user_arry = []
+    users.each do |user|
+      user_arry.push(user.name)
+    end
+    return user_arry
   end
 end

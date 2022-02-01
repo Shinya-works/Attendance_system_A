@@ -56,10 +56,11 @@ class AttendancesController < ApplicationController
   end
 
   def overwork_application
+    superiors_users(@users)
   end
 
   def update_overwork
-    if @attendance.update_attributes(attendance_params)
+    if @attendance.update_attributes(attendances_params)
       redirect_to @user
     else
       render :overwork_application
@@ -69,8 +70,9 @@ class AttendancesController < ApplicationController
   private
     
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :expected_end_time,
-        :overtime, :business_processing_details, :authentication_user, :authentication_day, :authentication_state])[:attendances]
+      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :expected_end_time, :next_day
+        :overtime, :business_processing_details, :authentication_user, :authentication_day, :authentication_state,
+        :next_day, :update_authentication, :attendances_authentication])[:attendances]
     end
 
     def set_attendace

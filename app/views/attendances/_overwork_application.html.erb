@@ -1,0 +1,42 @@
+<% provide(:btn_text, '変更を送信する') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center modal_overwork_application">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h2 class="modal-title title_h1">【残業申請】</h2>
+    </div>
+    <div class="modal-body">
+      <%= form_with(model: @user, url: update_overwork_user_attendance_path(@user, @attendance),
+        local: true, method: :patch) do |f| %>
+        <%= f.fields_for @attendance do |attendance| %>
+          <table class="table table-bordered table-striped overtime_application_table">
+            <thead>
+              <tr>
+                <th>日付</th>
+                <th>曜日</th>
+                <th>終了予定時間</th>
+                <th>翌日</th>
+                <th>業務処理内容</th>
+                <th>指示者確認㊞</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><%= l(@attendance.worked_on, format: :short) %></td>
+                <td><%= $days_of_the_week[@attendance.worked_on.wday] %></td>
+                <td><%= attendance.time_select(:expected_end_time, {include_blank: true}, {class: "input-sm"} )%></td>
+                <td><%= attendance.check_box :next_day, class: "form-control" %></td>
+                <td><%= attendance.text_field :business_processing_details, class: "form-control" %></td>
+                <td><%= attendance.select(:authentication_user, superiors_users_arry(@users), { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class"}) %></td>
+              </tr>
+            </tbody>
+          </table>
+          <%= attendance.submit yield(:btn_text), class: "btn btn-primary btn-block label-#{yield(:class_text)}" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
