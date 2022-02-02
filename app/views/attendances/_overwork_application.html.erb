@@ -9,9 +9,8 @@
       <h2 class="modal-title title_h1">【残業申請】</h2>
     </div>
     <div class="modal-body">
-      <%= form_with(model: @user, url: update_overwork_user_attendance_path(@user, @attendance),
+      <%= form_with(model:@attendance, url: update_overwork_user_attendance_path(@user, @attendance),
         local: true, method: :patch) do |f| %>
-        <%= f.fields_for @attendance do |attendance| %>
           <table class="table table-bordered table-striped overtime_application_table">
             <thead>
               <tr>
@@ -27,15 +26,16 @@
               <tr>
                 <td><%= l(@attendance.worked_on, format: :short) %></td>
                 <td><%= $days_of_the_week[@attendance.worked_on.wday] %></td>
-                <td><%= attendance.time_select(:expected_end_time, {include_blank: true}, {class: "input-sm"} )%></td>
-                <td><%= attendance.check_box :next_day, class: "form-control" %></td>
-                <td><%= attendance.text_field :business_processing_details, class: "form-control" %></td>
-                <td><%= attendance.select(:authentication_user, superiors_users_arry(@users), { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class"}) %></td>
+                <td><%= f.time_select(:expected_end_time, {include_blank: true}, {class: "input-sm"} )%></td>
+                <td><%= f.check_box(:next_day, {class: "form-control"}, checked_value='1', unchecked_value='0') %></td>
+                <td><%= f.text_field :business_processing_details, {class: "form-control"} %></td>
+                <td><%= f.select(:authentication_user, superiors_users_arry(@users),
+                  { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class"}) %></td>
               </tr>
             </tbody>
           </table>
-          <%= attendance.submit yield(:btn_text), class: "btn btn-primary btn-block label-#{yield(:class_text)}" %>
-        <% end %>
+          <%= f.hidden_field :authentication_state, :value => "申請中" %>
+      <%= f.submit yield(:btn_text), class: "btn btn-primary btn-block label-#{yield(:class_text)}" %>
       <% end %>
     </div>
   </div>

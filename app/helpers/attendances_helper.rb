@@ -37,7 +37,9 @@ module AttendancesHelper
   def superiors_users_arry(users)
     user_arry = []
     users.each do |user|
-      user_arry.push(user.name)
+      unless user.name == current_user.name 
+        user_arry.push(user.name)
+      end
     end
     return user_arry
   end
