@@ -61,6 +61,7 @@ class AttendancesController < ApplicationController
 
   def update_overwork
     if @attendance.update_attributes(overwork_application_params)
+      flash[:success] = "残業申請をしました"
       redirect_to @user
     else
       render :overwork_application
@@ -76,7 +77,7 @@ class AttendancesController < ApplicationController
     end
 
     def overwork_application_params
-      params.require(:attendance).permit(:next_day, :overtime, :business_processing_details, :authentication_user,
+      params.require(:attendance).permit(:next_day, :expected_end_time, :overtime, :business_processing_details, :authentication_user,
         :authentication_day, :authentication_state, :update_authentication, :attendances_authentication)
     end
 
