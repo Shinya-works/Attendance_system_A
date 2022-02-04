@@ -95,7 +95,9 @@
           
             <td><%= day.expected_end_time.hour if day.expected_end_time.present? %></td>
             <td><%= day.expected_end_time.min if day.expected_end_time.present? %></td>
-            <td><%=  calc_overwork_time(day.expected_end_time, @user.designated_work_end_time, day.next_day) if day.expected_end_time.present? %></td>
+            <td><%=  calc_overwork_time(day.expected_end_time,
+                                        @user.designated_work_end_time,
+                                        day.next_day) if day.expected_end_time.present? %></td>
             <td><%= day.business_processing_details if day.business_processing_details.present? %></td>
             <td>
               <%= day.authentication_user %>

@@ -46,7 +46,7 @@ module AttendancesHelper
 
   def calc_overwork_time(expected_end_time, designated_work_end_time, next_day)
     if next_day == "1"
-      overtime_hour = format("%.2f", ((((expected_end_time + 24 * 60 * 60) - designated_work_end_time) / 60) / 60.0))
+      overtime_hour = format("%.2f", (((expected_end_time - designated_work_end_time) / 60) / 60.0))
     else
       overtime_hour = format("%.2f", (((expected_end_time - designated_work_end_time) / 60) / 60.0))
     end
