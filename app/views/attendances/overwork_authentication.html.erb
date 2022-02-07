@@ -29,7 +29,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <% user.attendances.each do |attendance| %>
+                  <% user..overwork_authentication_attendances.each do |attendance| %>
                     <%= f.fields_for "attendances[]", user do |fi| %>
                       <tr>
                         <td><%= l(attendance.worked_on, format: :short) %></td>
@@ -41,7 +41,7 @@
                         <td><%= fi.select(:overwork_authentication, ["申請中", "承認", "否認"],
                           { prompt: "申請中" }, { id: "user_id", class: "user_class"}) %></td>
                         <td><%= fi.check_box(:overwork_authentication, {}, checked_value='1', unchecked_value='0') %></td>
-                        <td><%= link_to "確認", '#', class: "btn btn_primary" %></td>
+                        <td><%= link_to "確認", , class: "btn btn_primary" %></td>
                       </tr>
                     <% end %>
                   <% end %>

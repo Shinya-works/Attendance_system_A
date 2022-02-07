@@ -33,7 +33,7 @@ module SessionsHelper
   def current_user
     if (user_id = session[:user_id])
       # @current_userがあった場合(二回目の処理)current_userメソッドの戻り理に@current_userを入れる||ログインで定義したsession[:user_id]をつかってUser内の情報を取得し@current_userに代入
-      @currrnt_user ||= User.find_by(id: user_id)
+      @currnt_user ||= User.find_by(id: user_id)
       # cookies.signed[:user_idが存在するときuser_idに代入
     elsif (user_id = cookies.signed[:user_id]
       # 代入されたuser_idを使ってUserモデルから情報を取得しuserに代入

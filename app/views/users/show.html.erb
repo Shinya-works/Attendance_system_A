@@ -28,10 +28,12 @@
   </div>
 
   <% if current_user.superiors %>
-    <%= link_to "【所属長承認申請のお知らせ】", attendances_attendances_authentication_user_path(current_user),
+    <%= link_to "【所属長承認申請のお知らせ】", '#',
       remote: true, class: "border border-danger text text-danger" %>
-    <%= link_to "残業申請のお知らせ】", attendances_overwork_authentication_user_path(current_user),
-      class: "border border-danger text text-danger" %>
+    <p>
+      <%= link_to "【残業申請のお知らせ】", attendances_overwork_authentication_user_path(current_user),
+        class: "border border-danger text text-danger" %>
+    </p>
   <% end %>
 
   <div class="btn-edit-attendances">

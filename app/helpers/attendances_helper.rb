@@ -45,4 +45,8 @@ module AttendancesHelper
       overtime_hour = format("%.2f", (((expected_end_time - designated_work_end_time) / 60) / 60.0))
     end
   end
+
+  def self.overwork_authentication_attendances
+    self.attendances.all.where(authentication_state: "申請中", authentication_user: current_user.name)
+  end
 end
