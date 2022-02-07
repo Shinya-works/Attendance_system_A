@@ -68,8 +68,4 @@ before_action :set_one_month, only: :show
       params.require(:user).permit(:name, :email, :password, :password_confirmation, :department,
         :employee_number, :uid, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
-
-    def set_user
-      @user = User.find(params[:id])
-    end
 end

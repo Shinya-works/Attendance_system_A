@@ -7,6 +7,7 @@ class AttendancesController < ApplicationController
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_monthset_attendances
   before_action :set_attendace, only: [:update, :overwork_application, :update_overwork]
+  before_action :set_applications, only: [:attendances_authentication, :update_authentication]
   
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -67,6 +68,19 @@ class AttendancesController < ApplicationController
       render :overwork_application
     end
   end
+
+  def overwork_authentication
+
+  end
+
+  def update_overwork_authentication
+    @attendances = overwork_authentication_params.map do |id, attendance_param|
+      attendance = User.all.attendance.find(id)
+      attendance.update_attributes(attendance_param) if attendance.overwork_authentication == "1"
+      attendance
+    end
+    respond_with(@attendance, location: overwork_authentication)
+  end
   
   private
     
@@ -77,8 +91,11 @@ class AttendancesController < ApplicationController
     end
 
     def overwork_application_params
-      params.require(:attendance).permit(:next_day, :expected_end_time, :overtime, :business_processing_details, :authentication_user,
-        :authentication_day, :authentication_state, :update_authentication, :attendances_authentication)
+      params.require(:attendance).permit(:next_day, :expected_end_time, :authentication_user, :authentication_state)
+    end
+
+    def overwork_authentication_params
+      params.permit(attendance: [:authentication_state, :overwork_authentication])[:attendance]
     end
 
     def set_attendace
@@ -86,10 +103,15 @@ class AttendancesController < ApplicationController
     end
 
     def set_attendances
-      @attendances = Attendances.all
+      @attendances = Attendance.all
     end
 
     def set_user_id
       @user = User.find(params[:user_id])
+    end
+
+    def set_applications
+      @application_users = User.all.includes(:attendances).where(attendances: {authentication_state: "申請中",
+        authentication_user: current_user})
     end
 end

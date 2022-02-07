@@ -21,14 +21,13 @@ ActiveRecord::Schema.define(version: 20220131134513) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.time "expected_end_time"
-    t.time "overtime"
     t.string "business_processing_details"
     t.string "authentication_user"
-    t.time "authentication_day"
     t.string "authentication_state"
     t.string "next_day"
     t.string "update_authentication"
     t.string "attendances_authentication"
+    t.string "overwork_authentication"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

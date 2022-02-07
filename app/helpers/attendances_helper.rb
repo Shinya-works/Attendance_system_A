@@ -35,13 +35,7 @@ module AttendancesHelper
   end
 
   def superiors_users_arry(users)
-    user_arry = []
-    users.each do |user|
-      unless user.name == current_user.name 
-        user_arry.push(user.name)
-      end
-    end
-    return user_arry
+    users.map { |user| user.name }
   end
 
   def calc_overwork_time(expected_end_time, designated_work_end_time, next_day)

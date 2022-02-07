@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
       get 'attendances/attendances_authentication'
+      patch 'attendances/update_authentication'
       get 'attendances/edit_attendances_authentication'
       get 'attendances/overwork_authentication'
       get 'attendances/attendances_log'
