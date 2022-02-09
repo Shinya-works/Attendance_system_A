@@ -4,9 +4,8 @@
   <div class="row">
     <table class="table table-bordered table-condensed user-table">
       <tr>
-        <td><%= link_to "←", attendances_confirmation_one_month_user_path(date: @first_day.prev_month), class: "btn btn-default" %>
+        <td>
             <%= l(@first_day, format: :middle) %>時間管理表
-            <%= link_to "→", attendances_confirmation_one_month_user_path(date: @first_day.next_month), class: "btn btn-default" %>
         </td>
         <td colspan="3" class="table-active">
           指定勤務開始時間  <%= format_basic_info(@user.designated_work_start_time) %><span class="br"></span>

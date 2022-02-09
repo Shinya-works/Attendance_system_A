@@ -3,6 +3,8 @@ class AddOverworkColumToAttendances < ActiveRecord::Migration[5.1]
     add_column :attendances, :expected_end_time, :time
     add_column :attendances, :business_processing_details, :string
     add_column :attendances, :authentication_user, :string
-    add_column :attendances, :authentication_state, :string
+    add_column :attendances, :authentication_state_overwork, :string
+    add_column :attendances, :authentication_state_edit, :string
+    add_column :attendances, :authentication_state_attendances, :string
   end
 end
