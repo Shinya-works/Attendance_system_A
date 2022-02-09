@@ -32,6 +32,7 @@ module AttendancesHelper
 
   def superiors_users(users)
     @users = users.where(superiors: true)
+                  .where.not(name: current_user.name)
   end
 
   def superiors_users_arry(users)
@@ -46,7 +47,7 @@ module AttendancesHelper
     end
   end
 
-  def self.overwork_authentication_attendances
-    self.attendances.all.where(authentication_state: "申請中", authentication_user: current_user.name)
+  def overwork_authentication_attendances(user)
+    user.attendances.all.where(authentication_state: "申請中", authentication_user: current_user.name)
   end
 end

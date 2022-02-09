@@ -1,11 +1,11 @@
 class AttendancesController < ApplicationController
   include AttendancesHelper
-  before_action :set_user, only: [:edit_one_month, :update_one_month]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :confirmation_one_month]
   before_action :set_users, only: :overwork_application
   before_action :set_user_id, only: [:update, :overwork_application, :update_overwork]
-  before_action :logged_in_user, only: [:update, :edit_one_month]
-  before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :set_one_month, only: :edit_one_month
+  before_action :logged_in_user, only: [:update, :edit_one_month, :confirmation_one_month]
+  before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :confirmation_one_month]
+  before_action :set_one_month, only: [:edit_one_month, :confirmation_one_month]
   before_action :set_attendace, only: [:update, :overwork_application, :update_overwork]
   before_action :set_applications, only: [:overwork_authentication, :update_overwork_authentication]
   
@@ -52,6 +52,9 @@ class AttendancesController < ApplicationController
       redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
 
+  def confirmation_one_month
+  end
+
   def list_of_employees
     @users = User.all.includes(:attendances)
   end
@@ -61,6 +64,7 @@ class AttendancesController < ApplicationController
   end
 
   def update_overwork
+    (byebug)
     if @attendance.update_attributes(overwork_application_params)
       flash[:success] = "残業申請をしました"
       redirect_to @user
@@ -70,7 +74,6 @@ class AttendancesController < ApplicationController
   end
 
   def overwork_authentication
-
   end
 
   def update_overwork_authentication
@@ -78,7 +81,7 @@ class AttendancesController < ApplicationController
       attendance = @application_users.attendance.find(id)
       attendance.update_attributes(attendance_param) if attendance.overwork_authentication == "1"
     end
-    render:
+    render:current_user
   end
   
   private
