@@ -8,12 +8,12 @@
         <span aria-hidden="true">×</span>
       </button>
     </div>
-    <% (byebug) %>
+
     <div class="modal-body">
       <%= form_with(model: @user, url: attendances_update_overwork_authentication_users_path(@user),
           local: true, method: :patch) do |f| %>
         <% @application_users.each do |user_id, attendance| %>
-          <h2 class="center">【<%= user_id.name %>からの残業申請】</h2>
+          <h2 class="center">【<%= attendance.name %>からの残業申請】</h2>
           <table class="table table_bordered table_striped overtime_application_table">
             <thead>
               <tr>
@@ -29,7 +29,7 @@
               </tr>
             </thead>
             <tbody>
-              <% overwork_authentication_attendances(user).each do |attendance| %>
+              <% overwork_authentication_attendances(attendance).each do |attendance| %>
                 <%= f.fields_for attendance do |fa| %>
                   <tr>
                     <td><%= l(attendance.worked_on, format: :short) %></td>

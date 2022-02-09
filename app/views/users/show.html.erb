@@ -104,11 +104,11 @@
                                         day.next_day) if day.expected_end_time.present? %></td>
             <td><%= day.business_processing_details if day.business_processing_details.present? %></td>
             <td>
-              <%= day.authentication_user %>
-              <% if day.authentication_state == "申請中" %>
-                へ<%= day.authentication_state %>
+              <%= day.authentication_user if day.authentication_user.present?%>
+              <% if day.authentication_state_overwork == "申請中" && day.authentication_state_overwork.present? %>
+                へ<%= day.authentication_state_overwork %>
               <% else %>
-                <%= day.authentication_state %>
+                <%= day.authentication_state_overwork %>
               <% end %>
             </td>
           </tr>
