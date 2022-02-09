@@ -48,6 +48,6 @@ module AttendancesHelper
   end
 
   def overwork_authentication_attendances(user)
-    user.attendances.all.where(authentication_state: "申請中", authentication_user: current_user.name)
+    user.attendances.all.where(authentication_state_overwork: "申請中", authentication_user: current_user.name)
   end
 end

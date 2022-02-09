@@ -64,7 +64,6 @@ class AttendancesController < ApplicationController
   end
 
   def update_overwork
-    (byebug)
     if @attendance.update_attributes(overwork_application_params)
       flash[:success] = "残業申請をしました"
       redirect_to @user
@@ -74,6 +73,7 @@ class AttendancesController < ApplicationController
   end
 
   def overwork_authentication
+    @user = User.find(params[:user_id])
   end
 
   def update_overwork_authentication
@@ -113,7 +113,7 @@ class AttendancesController < ApplicationController
     end
 
     def set_applications
-      @application_users = User.all.includes(:attendances).where(attendances: {authentication_state: "申請中",
+      @application_users = User.all.includes(:attendances).where(attendances: {authentication_state_overwork: "申請中",
         authentication_user: current_user.name})
     end
 end
