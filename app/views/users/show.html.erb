@@ -28,10 +28,10 @@
   </div>
 
   <% if current_user.superiors %>
-    <%= link_to "【所属長承認申請のお知らせ】", '#',
+    <%= link_to "【所属長承認申請のお知らせ】", attendances_update_authentication_user_path(@user),
       remote: true, class: "border border-danger text text-danger" %>
     <p>
-      <%= link_to "【残業申請のお知らせ】", attendances_overwork_authentication_user_path(current_user),
+      <%= link_to "【残業申請のお知らせ】", attendances_overwork_authentication_user_path(@user),
         class: "border border-danger text text-danger" %>
     </p>
   <% end %>
@@ -129,6 +129,6 @@
 </div>
 
 <!--モーダル表示-->
-<div id="attendances_authentication_user" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="attendances_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="overwork_application" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="overwork_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

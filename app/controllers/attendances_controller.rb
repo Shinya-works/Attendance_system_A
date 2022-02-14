@@ -7,7 +7,7 @@ class AttendancesController < ApplicationController
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :confirmation_one_month]
   before_action :set_one_month, only: [:edit_one_month, :confirmation_one_month]
   before_action :set_attendace, only: [:update, :overwork_application, :update_overwork]
-  before_action :set_applications, only: [:overwork_authentication, :update_overwork_authentication]
+  before_action :set_overwork_applications, only: [:overwork_authentication, :update_overwork_authentication]
   
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -112,8 +112,13 @@ class AttendancesController < ApplicationController
       @user = User.find(params[:user_id])
     end
 
-    def set_applications
-      @application_users = User.all.includes(:attendances).where(attendances: {authentication_state_overwork: "申請中",
-        authentication_user: current_user.name})
+    def set_overwork_applications
+      @overwork_application_users = User.all.includes(:attendances).where(attendances: {authentication_state_overwork: "申請中",
+        overwork_authentication_user: current_user.name})
+    end
+
+    def set_attendances_applications
+      @attendances_application_users = User.all.includes(:attendances).where(attendances: {authentication_state_attendances: "申請中",
+        attendances_authentication_user: current_user.name})
     end
 end
