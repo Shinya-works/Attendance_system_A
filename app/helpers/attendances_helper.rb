@@ -30,12 +30,9 @@ module AttendancesHelper
     return attendances
   end
 
-  def superiors_users(users)
-    @users = users.where(superiors: true)
+  def superiors_users_of_arry
+    users = User.all.where(superiors: true)
                   .where.not(name: current_user.name)
-  end
-
-  def superiors_users_arry(users)
     users.map { |user| user.name }
   end
 
@@ -45,9 +42,5 @@ module AttendancesHelper
     else
       overtime_hour = format("%.2f", (((expected_end_time - designated_work_end_time) / 60) / 60.0))
     end
-  end
-
-  def overwork_authentication_attendances(user)
-    user.attendances.all.where(authentication_state_overwork: "申請中", authentication_user: current_user.name)
   end
 end

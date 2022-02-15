@@ -1,5 +1,5 @@
 <% provide(:class_text, 'overwork_application') %>
-<% provide(:button_text, '変更を送信する') %>
+<% provide(:btn_text, '変更を送信する') %>
 
 <div class="modal-dialog modal-lg modal-dialog-center">
   <div class="modal-content">
@@ -12,8 +12,8 @@
     <div class="modal-body">
       <%= form_with(model: @user, url: attendances_update_overwork_authentication_users_path(@user),
           local: true, method: :patch) do |f| %>
-        <% @application_users.each do |user_id, attendance| %>
-          <h2 class="center">【<%= attendance.name %>からの残業申請】</h2>
+        <% @users.each do |user| %>
+          <h2 class="center">【<%= user.name %>からの残業申請】</h2>
           <table class="table table_bordered table_striped overtime_application_table">
             <thead>
               <tr>
@@ -29,16 +29,16 @@
               </tr>
             </thead>
             <tbody>
-              <% overwork_authentication_attendances(attendance).each do |attendance| %>
-                <%= f.fields_for attendance do |fa| %>
+              <% @attendances.each do |attendance| %>
+                <%= f.fields_for "@attendances[]", attendance do |fa| %>
                   <tr>
                     <td><%= l(attendance.worked_on, format: :short) %></td>
                     <td><%= $days_of_the_week[attendance.worked_on.wday] %></td>
-                    <td><%= @expected_end_time = attendance.expected_end_time %></td>
-                    <td><%= @designated_work_end_time = user.designated_work_end_time %></td>
-                    <td><%= calc_overwork_time(@expected_end_time, @designated_work_end_time, attendance.next_day) %></td>
+                    <td><%= format_basic_info(attendance.expected_end_time) %></td>
+                    <td><%= format_basic_info(attendance.user.designated_work_end_time) %></td>
+                    <td><%= calc_overwork_time(attendance.expected_end_time, attendance.user.designated_work_end_time, attendance.next_day) %></td>
                     <td><%= attendance.business_processing_details %></td>
-                    <td><%= fa.select(:authentication_state, ["なし", "申請中", "承認", "否認"],
+                    <td><%= fa.select(:authentication_state_overwork, ["なし", "申請中", "承認", "否認"],
                       { prompt: "申請中" }, { id: "user_id", class: "user_class"}) %></td>
                     <td><%= fa.check_box :overwork_authentication, {class: "form-control"}, checked_value='1', unchecked_value='0' %></td>
                     <td><%= link_to "確認", attendances_confirmation_one_month_user_path(user), class: "btn btn_primary" %></td>
@@ -47,8 +47,8 @@
               <% end %>
             </tbody>
           </table>
-          <%= f.submit yield(:btn_text), class: "btn btn-primary btn-lg btn-block label-#{yield(:class_text)}" %>
         <% end %>
+        <%= f.submit yield(:btn_text), class: "btn btn-primary btn-lg btn-block label-#{yield(:class_text)}" %>
       <% end %>
     </div>
   </div>

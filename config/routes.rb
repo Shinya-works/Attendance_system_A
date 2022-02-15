@@ -19,9 +19,7 @@ Rails.application.routes.draw do
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
       get 'attendances/confirmation_one_month'
-      patch 'attendances/update_authentication'
       get 'attendances/edit_attendances_authentication'
-      get 'attendances/overwork_authentication'
       get 'attendances/attendances_log'
     end
     collection do
@@ -34,7 +32,9 @@ Rails.application.routes.draw do
       end
       collection do
         get 'attendances_authentication'
-        patch 'attendances/update_authentication'
+        patch 'update_attendances_authentication'
+        get 'overwork_authentication'
+        patch 'update_authentication'
       end
     end
   end

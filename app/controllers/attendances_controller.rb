@@ -1,13 +1,12 @@
 class AttendancesController < ApplicationController
   include AttendancesHelper
+  include UsersHelper
   before_action :set_user, only: [:edit_one_month, :update_one_month, :confirmation_one_month]
-  before_action :set_users, only: :overwork_application
   before_action :set_user_id, only: [:update, :overwork_application, :update_overwork]
   before_action :logged_in_user, only: [:update, :edit_one_month, :confirmation_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :confirmation_one_month]
   before_action :set_one_month, only: [:edit_one_month, :confirmation_one_month]
   before_action :set_attendace, only: [:update, :overwork_application, :update_overwork]
-  before_action :set_overwork_applications, only: [:overwork_authentication, :update_overwork_authentication]
   
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -60,7 +59,7 @@ class AttendancesController < ApplicationController
   end
 
   def overwork_application
-    superiors_users(@users)
+    @users_arry = superiors_users_of_arry
   end
 
   def update_overwork
@@ -74,30 +73,64 @@ class AttendancesController < ApplicationController
 
   def overwork_authentication
     @user = User.find(params[:user_id])
+    @users = User.includes(:attendances).where(attendances: {
+      overwork_authentication_user: current_user.name,
+      authentication_state_overwork: "申請中"
+      })
+    @attendances = Attendance.includes(:user).where(
+      overwork_authentication_user: current_user.name,
+      authentication_state_overwork: "申請中"
+      )
   end
 
   def update_overwork_authentication
-    @attendances = overwork_authentication_params.map do |id, attendance_param|
-      attendance = @application_users.attendance.find(id)
-      attendance.update_attributes(attendance_param) if attendance.overwork_authentication == "1"
+    ActiveRecord::Base.transaction do
+      @overwork_state1_count = Attendance.where(authentication_state_overwork: "申請中").count
+      @overwork_state2_count = Attendance.where(authentication_state_overwork: "承認").count
+      @overwork_state3_count = Attendance.where(authentication_state_overwork: "否認").count
+      @overwork_state4_count = Attendance.where(authentication_state_overwork: "なし").count
+      @user = User.find(prams[:user_id])
+      overwork_authentication_params.each do |id, item|
+        attendance = Attendance.find(id)
+        attendance.update_attributes!(item)
+      end
     end
-    render:current_user
+    flash[:success] = "残業申請⇒申請中を#{@overwork_state1_count}件、承認を#{@overwork_state2_count}件、
+      否認を#{@overwork_state3_count}件、なしを#{@overwork_state4_count}件更新しました"
+    redirect_to user_url(@user)
+  rescue ActiveRecord::RecordInvalid
+    flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
+    redirect_to user_url(@user)
   end
   
   private
     
     def attendances_params
-      params.require(:user).permit(attendances: [:started_at, :finished_at, :note, :expected_end_time, :next_day,
-        :overtime, :business_processing_details, :authentication_user, :authentication_day, :authentication_state,
-        :update_authentication, :attendances_authentication])[:attendances]
+      params.require(:user).permit(attendances: [
+        :started_at,
+        :finished_at,
+        :note,
+        :expected_end_time,
+        :next_day,
+        :overtime,
+        :business_processing_details,
+        :authentication_state_overwork,
+        :authentication_day,
+        :update_authentication,
+        :attendances_authentication,
+        :authentication_state_edit,
+        :authentication_state_attendances,
+        :edit_authentication_user,
+        :overwork_authentication_user
+        ])[:attendances]
     end
 
     def overwork_application_params
-      params.require(:attendance).permit(:next_day, :expected_end_time, :authentication_user, :authentication_state)
+      params.require(:attendance).permit(:next_day, :expected_end_time, :business_processing_details, :overwork_authentication_user, :authentication_state_overwork)
     end
 
     def overwork_authentication_params
-      params.permit(attendance: [:authentication_state, :overwork_authentication])[:attendance]
+      params.permit(attendance: [:authentication_state_overwork, :overwork_authentication])[:attendance]
     end
 
     def set_attendace
@@ -110,15 +143,5 @@ class AttendancesController < ApplicationController
 
     def set_user_id
       @user = User.find(params[:user_id])
-    end
-
-    def set_overwork_applications
-      @overwork_application_users = User.all.includes(:attendances).where(attendances: {authentication_state_overwork: "申請中",
-        overwork_authentication_user: current_user.name})
-    end
-
-    def set_attendances_applications
-      @attendances_application_users = User.all.includes(:attendances).where(attendances: {authentication_state_attendances: "申請中",
-        attendances_authentication_user: current_user.name})
     end
 end

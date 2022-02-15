@@ -22,7 +22,9 @@ ActiveRecord::Schema.define(version: 20220131134513) do
     t.datetime "updated_at", null: false
     t.time "expected_end_time"
     t.string "business_processing_details"
-    t.string "authentication_user"
+    t.string "overwork_authentication_user"
+    t.string "edit_authentication_user"
+    t.string "attendances_authentication_user"
     t.string "authentication_state_overwork"
     t.string "authentication_state_edit"
     t.string "authentication_state_attendances"

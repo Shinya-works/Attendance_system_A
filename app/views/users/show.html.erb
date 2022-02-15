@@ -28,10 +28,10 @@
   </div>
 
   <% if current_user.superiors %>
-    <%= link_to "【所属長承認申請のお知らせ】", attendances_update_authentication_user_path(@user),
+    <%= link_to "【所属長承認申請のお知らせ】", "#",
       remote: true, class: "border border-danger text text-danger" %>
     <p>
-      <%= link_to "【残業申請のお知らせ】", attendances_overwork_authentication_user_path(@user),
+      <%= link_to "【残業申請のお知らせ】", overwork_authentication_user_attendances_path(@user), remote: true,
         class: "border border-danger text text-danger" %>
     </p>
   <% end %>
@@ -104,7 +104,7 @@
                                         day.next_day) if day.expected_end_time.present? %></td>
             <td><%= day.business_processing_details if day.business_processing_details.present? %></td>
             <td>
-              <%= day.authentication_user if day.authentication_user.present?%>
+              <%= day.overwork_authentication_user if day.overwork_authentication_user.present?%>
               <% if day.authentication_state_overwork == "申請中" && day.authentication_state_overwork.present? %>
                 へ<%= day.authentication_state_overwork %>
               <% else %>
