@@ -89,11 +89,15 @@ class AttendancesController < ApplicationController
       @overwork_state2_count = Attendance.where(authentication_state_overwork: "承認").count
       @overwork_state3_count = Attendance.where(authentication_state_overwork: "否認").count
       @overwork_state4_count = Attendance.where(authentication_state_overwork: "なし").count
-      @user = User.find(prams[:user_id])
+      @user = User.find(params[:user_id])
       overwork_authentication_params.each do |id, item|
-        attendance = Attendance.find(id)
-        attendance.update_attributes!(item)
-      end
+        if item[:overwork_authentication] == "1"
+          attendance = Attendance.find(id)
+          attendance.update_attributes!(item)
+        end
+      end 
+      nil_attendances = Attendance.where(authentication_state_overwork: "なし")
+      nil_attendances.update_all(overwork_authentication_user: nil, business_processing_details: nil, expected_end_time: nil, authentication_state_overwork: nil)
     end
     flash[:success] = "残業申請⇒申請中を#{@overwork_state1_count}件、承認を#{@overwork_state2_count}件、
       否認を#{@overwork_state3_count}件、なしを#{@overwork_state4_count}件更新しました"
@@ -130,7 +134,7 @@ class AttendancesController < ApplicationController
     end
 
     def overwork_authentication_params
-      params.permit(attendance: [:authentication_state_overwork, :overwork_authentication])[:attendance]
+      params.require(:user).permit(attendances: [:authentication_state_overwork, :overwork_authentication])[:attendances]
     end
 
     def set_attendace
