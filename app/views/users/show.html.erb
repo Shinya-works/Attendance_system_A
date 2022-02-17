@@ -73,7 +73,7 @@
         </tr>
       </thead>
       
-      <tbody>
+      <tbody><% byebug %>
         <% @attendances.each do |day| %>
           <tr>
             <td><%= link_to "残業申請", overwork_application_user_attendance_path(@user, day), remote: true, class: "btn btn-primary" %></td>
@@ -104,7 +104,7 @@
                                         day.next_day) if day.expected_end_time.present? %></td>
             <td><%= day.business_processing_details if day.business_processing_details.present? %></td>
             <td>
-              <%= day.overwork_authentication_user if day.overwork_authentication_user.present?%>
+              <%= day.overwork_authentication_user if day.overwork_authentication_user.present? %>
               <% if day.authentication_state_overwork == "申請中" && day.authentication_state_overwork.present? %>
                 へ<%= day.authentication_state_overwork %>
               <% else %>

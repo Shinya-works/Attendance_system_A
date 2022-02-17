@@ -29,7 +29,7 @@
               </tr>
             </thead>
             <tbody>
-              <% @attendances.each do |attendance| %>
+              <% @attendances.where(user_id: user.id).each do |attendance| %>
                 <%= f.fields_for "@attendances[]", attendance do |fa| %>
                   <tr>
                     <td><%= l(attendance.worked_on, format: :short) %></td>
