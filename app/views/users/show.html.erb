@@ -29,7 +29,8 @@
 
   <% if current_user.superiors %>
     <%= link_to "【所属長承認申請のお知らせ】", attendances_authentication_user_attendances_path(@user),
-      remote: true, class: "border border-danger text text-danger" %>
+      #remote: true,
+       class: "border border-danger text text-danger" %>
     <p>
       <% if @overwork_attendances.count >= 1 %>
         <%= link_to "【残業申請のお知らせ】#{@overwork_attendances.count}件のお知らせがあります", overwork_authentication_user_attendances_path(@user), remote: true,
@@ -125,7 +126,16 @@
           <td colspan="6"></td>
           <td></td>
           <td colspan="5"></td>
-          <td><%= link_to "申請", "#", class: "btn btn-primary" %></td>
+          <td>
+          <% if @attendances_authentication_month.attendances_authentication_user.present? %>
+            <% "所属長#{@attendances_authentication_month.attendances_authentication_user}に#{@attendances_authentication_month.authentication_state_attendances}" %>
+          <% form_with(model: @attendances_authentication_month, url: update_attendances_authentication_user_attendances_path(@user),
+            local: true, method: :patch) do |f| %>
+            <%= f.select(:attendances_authentication_user, @users_arry,
+              { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class"}) %>
+            <%= f.hidden_field :authentication_state_attendances, :value => "申請中" %>
+            <%= f.submit "申請", class: "btn btn-primary" %>
+          </td>
         </tr>
       </tfoot>
     </table>

@@ -20,6 +20,8 @@ before_action :set_one_month, only: :show
   end
 
   def show
+    @users_arry = superiors_users_of_arry
+    @attendances_authentication_month = @user.attendances.where(worked_on: @first_day)
     @overwork_attendances = Attendance.includes(:user).where(
       overwork_authentication_user: current_user.name,
       authentication_state_overwork: "申請中"

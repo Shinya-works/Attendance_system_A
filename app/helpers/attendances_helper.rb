@@ -30,12 +30,6 @@ module AttendancesHelper
     return attendances
   end
 
-  def superiors_users_of_arry
-    users = User.all.where(superiors: true)
-                  .where.not(name: current_user.name)
-    users.map { |user| user.name }
-  end
-
   def calc_overwork_time(expected_end_time, designated_work_end_time, next_day)
     if next_day == "1"
       overtime_hour = format("%.2f", (((expected_end_time - designated_work_end_time) / 60) / 60.0))

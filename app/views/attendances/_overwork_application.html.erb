@@ -30,7 +30,8 @@
                 <td><%= f.check_box(:next_day, {class: "form-control"}, checked_value='1', unchecked_value='0') %></td>
                 <td><%= f.text_field :business_processing_details, {class: "form-control"} %></td>
                 <td><%= f.select(:overwork_authentication_user, @users_arry,
-                  { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class"}) %></td>
+                  { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class"}) %>
+                </td>
               </tr>
             </tbody>
           </table>

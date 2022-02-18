@@ -76,4 +76,10 @@ class ApplicationController < ActionController::Base
     flash[:danger] = "ページ情報の取得に失敗しました、再アクセスしてください。"
     redirect_to root_url
   end
+
+  def superiors_users_of_arry
+    users = User.all.where(superiors: true)
+                  .where.not(name: current_user.name)
+    users.map { |user| user.name }
+  end
 end

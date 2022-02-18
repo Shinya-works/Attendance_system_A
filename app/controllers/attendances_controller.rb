@@ -106,6 +106,10 @@ class AttendancesController < ApplicationController
     flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
     redirect_to user_url(@user)
   end
+
+  def attendances_authentication
+    
+  end
   
   private
     
