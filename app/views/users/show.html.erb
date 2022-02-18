@@ -31,8 +31,12 @@
     <%= link_to "【所属長承認申請のお知らせ】", "#",
       remote: true, class: "border border-danger text text-danger" %>
     <p>
-      <%= link_to "【残業申請のお知らせ】", overwork_authentication_user_attendances_path(@user), remote: true,
-        class: "border border-danger text text-danger" %>
+      <% if @overwork_attendances.count >= 1 %>
+        <%= link_to "【残業申請のお知らせ】#{@overwork_attendances.count}件のお知らせがあります", overwork_authentication_user_attendances_path(@user), remote: true,
+          class: "border border-danger text text-danger" %>
+      <% else %>
+        【残業申請のお知らせ】
+      <% end %>
     </p>
   <% end %>
 
