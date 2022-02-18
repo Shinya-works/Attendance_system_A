@@ -128,7 +128,12 @@
           <td colspan="5"></td>
           <td>
           <% if @attendances_authentication_month.attendances_authentication_user.present? %>
-            <% "所属長#{@attendances_authentication_month.attendances_authentication_user}に#{@attendances_authentication_month.authentication_state_attendances}" %>
+            <% if @attendances_authentication_month.attendances_authentication_user == "申請中" %>
+              <% "所属長#{@attendances_authentication_month.attendances_authentication_user}に#{@attendances_authentication_month.authentication_state_attendances}" %>
+            <% elsif @attendances_authentication_month.attendances_authentication_user == "承認" || "否認" %>
+              <% "所属長#{@attendances_authentication_month.attendances_authentication_user}が#{@attendances_authentication_month.authentication_state_attendances}" %>
+            <% end %>
+          <% end %>
           <% form_with(model: @attendances_authentication_month, url: update_attendances_authentication_user_attendances_path(@user),
             local: true, method: :patch) do |f| %>
             <%= f.select(:attendances_authentication_user, @users_arry,
