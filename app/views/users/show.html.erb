@@ -28,7 +28,7 @@
   </div>
 
   <% if current_user.superiors %>
-    <%= link_to "【所属長承認申請のお知らせ】", "#",
+    <%= link_to "【所属長承認申請のお知らせ】", attendances_authentication_user_attendances_path(@user),
       remote: true, class: "border border-danger text text-danger" %>
     <p>
       <% if @overwork_attendances.count >= 1 %>
