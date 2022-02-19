@@ -2,11 +2,11 @@ class AttendancesController < ApplicationController
   include AttendancesHelper
   include UsersHelper
   before_action :set_user, only: [:edit_one_month, :update_one_month, :confirmation_one_month]
-  before_action :set_user_id, only: [:update, :overwork_application, :update_overwork]
+  before_action :set_user_id, only: [:update, :overwork_application, :update_overwork, :attendances_application]
   before_action :logged_in_user, only: [:update, :edit_one_month, :confirmation_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :confirmation_one_month]
   before_action :set_one_month, only: [:edit_one_month, :confirmation_one_month]
-  before_action :set_attendace, only: [:update, :overwork_application, :update_overwork]
+  before_action :set_attendace, only: [:update, :overwork_application, :update_overwork, :attendances_application]
   
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
@@ -102,13 +102,51 @@ class AttendancesController < ApplicationController
     flash[:success] = "残業申請⇒申請中を#{@overwork_state1_count}件、承認を#{@overwork_state2_count}件、
       否認を#{@overwork_state3_count}件、なしを#{@overwork_state4_count}件更新しました"
     redirect_to user_url(@user)
-  rescue ActiveRecord::RecordInvalid
-    flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
-    redirect_to user_url(@user)
+    rescue ActiveRecord::RecordInvalid
+      flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
+      redirect_to user_url(@user)
+  end
+
+  def attendances_application
+    ActiveRecord::Base.transaction do
+      @attendance.update_attributes!(attendances_application_params)
+      flash[:success] = "一か月分の勤怠承認申請をしました"
+      redirect_to @user
+    end
+    rescue ActiveRecord::RecordInvalid
+      flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
+      redirect_to user_url(@user)
   end
 
   def attendances_authentication
-    
+    @user = User.find(params[:user_id])
+    @users = User.includes(:attendances).where(attendances: {
+      attendances_authentication_user: current_user.name,
+      authentication_state_attendances: "申請中"
+      })
+    @attendances = Attendance.includes(:user).where(
+      attendances_authentication_user: current_user.name,
+      authentication_state_attendances: "申請中"
+      )
+  end
+
+  def update_attendances_authentication
+    ActiveRecord::Base.transaction do
+      @user = User.find(params[:user_id])
+      attendances_authentication_params.each do |id, item|
+        if item[:attendances_authentication] == "1"
+          attendance = Attendance.find(id)
+          attendance.update_attributes!(item)
+        end
+      end 
+      nil_attendances = Attendance.where(authentication_state_attendances: "なし")
+      nil_attendances.update_all(attendances_authentication_user: nil, authentication_state_attendances: nil)
+    end
+    flash[:success] = "勤怠の承認に成功しました"
+    redirect_to user_url(@user)
+    rescue ActiveRecord::RecordInvalid
+      flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
+      redirect_to user_url(@user)
   end
   
   private
@@ -139,6 +177,14 @@ class AttendancesController < ApplicationController
 
     def overwork_authentication_params
       params.require(:user).permit(attendances: [:authentication_state_overwork, :overwork_authentication])[:attendances]
+    end
+
+    def attendances_application_params
+      params.require(:attendance).permit(:authentication_state_attendances, :attendances_authentication_user)
+    end
+
+    def attendances_authentication_params
+      params.require(:user).permit(attendances: [:authentication_state_attendances, :attendances_authentication])[:attendances]
     end
 
     def set_attendace

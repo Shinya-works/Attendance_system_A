@@ -1,0 +1,45 @@
+<% provide(:class_text, 'attendances_authentication') %>
+<% provide(:btn_text, '変更を送信する') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <%= form_with(model: @user, url: update_attendances_authentication_user_attendances_path(@user),
+          local: true, method: :patch) do |f| %>
+        <% @users.each do |user| %>
+          <h2 class="center">【<%= user.name %>からの一か月勤怠申請】</h2>
+          <table class="table table_bordered table_striped overtime_application_table">
+            <thead>
+              <tr>
+                <th>月</th>			
+                <th>指示者確認印</th>
+                <th>変更</th>
+                <th>勤怠を確認する</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @attendances.where(user_id: user.id).each do |attendance| %>
+                <%= f.fields_for "attendances[]", attendance do |fa| %>
+                  <tr>
+                    <td><%= "#{attendance.worked_on.month}月" %></td>
+                    <td><%= fa.select(:authentication_state_attendances, ["なし", "申請中", "承認", "否認"],
+                      { prompt: "申請中" }, { id: "user_id", class: "user_class"}) %></td>
+                    <td><%= fa.check_box :attendances_authentication, {class: "form-control"}, checked_value='1', unchecked_value='0' %></td>
+                    <td><%= link_to "確認", attendances_confirmation_one_month_user_path(user), class: "btn btn_primary" %></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+        <%= f.submit yield(:btn_text), class: "btn btn-primary btn-lg btn-block label-#{yield(:class_text)}" %> 
+      <% end %>
+    </div>
+  </div>
+</div>

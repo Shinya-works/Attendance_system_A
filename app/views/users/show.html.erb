@@ -28,9 +28,12 @@
   </div>
 
   <% if current_user.superiors %>
-    <%= link_to "【所属長承認申請のお知らせ】", attendances_authentication_user_attendances_path(@user),
-      #remote: true,
-       class: "border border-danger text text-danger" %>
+    <% if @authentication_attendances.count >= 1 %>
+      <%= link_to "【所属長承認申請のお知らせ】#{@authentication_attendances.count}件のお知らせがあります", attendances_authentication_user_attendances_path(@user),
+        remote: true, class: "border border-danger text text-danger" %>
+    <% else %>
+      【所属長承認申請のお知らせ】
+    <% end %>
     <p>
       <% if @overwork_attendances.count >= 1 %>
         <%= link_to "【残業申請のお知らせ】#{@overwork_attendances.count}件のお知らせがあります", overwork_authentication_user_attendances_path(@user), remote: true,
@@ -127,19 +130,26 @@
           <td></td>
           <td colspan="5"></td>
           <td>
-          <% if @attendances_authentication_month.attendances_authentication_user.present? %>
-            <% if @attendances_authentication_month.attendances_authentication_user == "申請中" %>
-              <% "所属長#{@attendances_authentication_month.attendances_authentication_user}に#{@attendances_authentication_month.authentication_state_attendances}" %>
-            <% elsif @attendances_authentication_month.attendances_authentication_user == "承認" || "否認" %>
-              <% "所属長#{@attendances_authentication_month.attendances_authentication_user}が#{@attendances_authentication_month.authentication_state_attendances}" %>
+          <div class="center">
+            <% if @attendances_authentication_month.authentication_state_attendances.present? %>
+              <% if @attendances_authentication_month.authentication_state_attendances == "申請中" %>
+                <%= "所属長#{@attendances_authentication_month.attendances_authentication_user}に#{@attendances_authentication_month.authentication_state_attendances}" %>
+              <% elsif @attendances_authentication_month.authentication_state_attendances == "承認" || "否認" %>
+                <%= "所属長#{@attendances_authentication_month.attendances_authentication_user}が#{@attendances_authentication_month.authentication_state_attendances}済" %>
+              <% end %>
             <% end %>
-          <% end %>
-          <% form_with(model: @attendances_authentication_month, url: update_attendances_authentication_user_attendances_path(@user),
-            local: true, method: :patch) do |f| %>
-            <%= f.select(:attendances_authentication_user, @users_arry,
-              { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class"}) %>
-            <%= f.hidden_field :authentication_state_attendances, :value => "申請中" %>
-            <%= f.submit "申請", class: "btn btn-primary" %>
+            <%= form_with(model: @attendances_authentication_month, url: attendances_application_user_attendance_path(@user,
+              @attendances_authentication_month), local: true, method: :patch) do |f| %>
+              <p>
+                <%= f.select(:attendances_authentication_user, @users_arry,
+                  { include_blank: "選択してください" }, { id: "user_id", class: "user_class"}) %>
+              </p>
+              <%= f.hidden_field :authentication_state_attendances, :value => "申請中" %>
+              <p>
+                <%= f.submit "申請", class: "btn btn-primary" %>
+              </p>
+            <% end %>
+          </div>
           </td>
         </tr>
       </tfoot>

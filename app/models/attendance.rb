@@ -7,6 +7,7 @@ class Attendance < ApplicationRecord
   validate :finished_at_is_invalid_without_a_started_at
   
   validate :started_at_than_finished_at_fast_if_invalid
+  validate :attendances_authentication_user, presence: true, on: :update
   
   def finished_at_is_invalid_without_a_started_at
     errors.add(:started_at, "が必要です") if started_at.blank? && finished_at.present?

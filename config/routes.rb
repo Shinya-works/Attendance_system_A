@@ -25,6 +25,7 @@ Rails.application.routes.draw do
       member do
         get 'overwork_application'
         patch 'update_overwork'
+        patch 'attendances_application'
       end
       collection do
         get 'attendances_authentication'
