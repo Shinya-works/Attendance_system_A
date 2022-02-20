@@ -63,11 +63,13 @@ class AttendancesController < ApplicationController
   end
 
   def update_overwork
-    if @attendance.update_attributes(overwork_application_params)
+    unless overwork_application_params[:business_processing_details] == ""
+      @attendance.update_attributes(overwork_application_params)
       flash[:success] = "残業申請をしました"
       redirect_to @user
     else
-      render :overwork_application
+      flash[:danger] = "業務処理内容を入力してください"
+      redirect_to @user
     end
   end
 
@@ -84,42 +86,32 @@ class AttendancesController < ApplicationController
   end
 
   def update_overwork_authentication
-    ActiveRecord::Base.transaction do
-      @overwork_state1_count = Attendance.where(authentication_state_overwork: "申請中").count
-      @overwork_state2_count = Attendance.where(authentication_state_overwork: "承認").count
-      @overwork_state3_count = Attendance.where(authentication_state_overwork: "否認").count
-      @overwork_state4_count = Attendance.where(authentication_state_overwork: "なし").count
-      @user = User.find(params[:user_id])
-      overwork_authentication_params.each do |id, item|
-        if item[:overwork_authentication] == "1"
-          attendance = Attendance.find(id)
-          attendance.update_attributes!(item)
-        end
-      end 
-      nil_attendances = Attendance.where(authentication_state_overwork: "なし")
-      nil_attendances.update_all(overwork_authentication_user: nil, business_processing_details: nil, expected_end_time: nil, authentication_state_overwork: nil)
+    @overwork_state1_count = Attendance.where(authentication_state_overwork: "申請中").count
+    @overwork_state2_count = Attendance.where(authentication_state_overwork: "承認").count
+    @overwork_state3_count = Attendance.where(authentication_state_overwork: "否認").count
+    @overwork_state4_count = Attendance.where(authentication_state_overwork: "なし").count
+    @user = User.find(params[:user_id])
+    overwork_authentication_params.each do |id, item|
+      if item[:overwork_authentication] == "1"
+        attendance = Attendance.find(id)
+        attendance.update_attributes!(item)
+        nil_attendances = Attendance.where(authentication_state_overwork: "なし")
+        nil_attendances.update_all(overwork_authentication_user: nil, business_processing_details: nil, expected_end_time: nil, authentication_state_overwork: nil)
+      end
     end
     flash[:success] = "残業申請⇒申請中を#{@overwork_state1_count}件、承認を#{@overwork_state2_count}件、
       否認を#{@overwork_state3_count}件、なしを#{@overwork_state4_count}件更新しました"
     redirect_to user_url(@user)
-    rescue ActiveRecord::RecordInvalid
-      flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
-      redirect_to user_url(@user)
   end
 
   def attendances_application
-    ActiveRecord::Base.transaction do
-      if attendances_application_params[:attendances_authentication_user] != ""
-        @attendance.update_attributes!(attendances_application_params)
-        flash[:success] = "一か月分の勤怠承認申請をしました"
-      else
-        flash[:danger] = "所属長を選択してください"
-      end
-      redirect_to @user
+    if attendances_application_params[:attendances_authentication_user] != ""
+      @attendance.update_attributes!(attendances_application_params)
+      flash[:success] = "一か月分の勤怠承認申請をしました"
+    else
+      flash[:danger] = "所属長を選択してください"
     end
-    rescue ActiveRecord::RecordInvalid
-      flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
-      redirect_to user_url(@user)
+    redirect_to @user
   end
 
   def attendances_authentication
@@ -135,22 +127,17 @@ class AttendancesController < ApplicationController
   end
 
   def update_attendances_authentication
-    ActiveRecord::Base.transaction do
-      @user = User.find(params[:user_id])
-      attendances_authentication_params.each do |id, item|
-        if item[:attendances_authentication] == "1"
-          attendance = Attendance.find(id)
-          attendance.update_attributes!(item)
-        end
-      end 
-      nil_attendances = Attendance.where(authentication_state_attendances: "なし")
-      nil_attendances.update_all(attendances_authentication_user: nil, authentication_state_attendances: nil, attendances_authentication: nil)
-    end
+    @user = User.find(params[:user_id])
+    attendances_authentication_params.each do |id, item|
+      if item[:attendances_authentication] == "1"
+        attendance = Attendance.find(id)
+        attendance.update_attributes!(item)
+        nil_attendances = Attendance.where(authentication_state_attendances: "なし")
+        nil_attendances.update_all(attendances_authentication_user: nil, authentication_state_attendances: nil, attendances_authentication: nil)
+      end
+    end 
     flash[:success] = "勤怠の承認に成功しました"
     redirect_to user_url(@user)
-    rescue ActiveRecord::RecordInvalid
-      flash[:danger] ="無効な更新データがあったため、更新をキャンセルしました"
-      redirect_to user_url(@user)
   end
   
   private
