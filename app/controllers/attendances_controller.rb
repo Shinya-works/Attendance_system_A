@@ -109,8 +109,12 @@ class AttendancesController < ApplicationController
 
   def attendances_application
     ActiveRecord::Base.transaction do
-      @attendance.update_attributes!(attendances_application_params)
-      flash[:success] = "一か月分の勤怠承認申請をしました"
+      if attendances_application_params[:attendances_authentication_user] != ""
+        @attendance.update_attributes!(attendances_application_params)
+        flash[:success] = "一か月分の勤怠承認申請をしました"
+      else
+        flash[:danger] = "所属長を選択してください"
+      end
       redirect_to @user
     end
     rescue ActiveRecord::RecordInvalid
@@ -140,7 +144,7 @@ class AttendancesController < ApplicationController
         end
       end 
       nil_attendances = Attendance.where(authentication_state_attendances: "なし")
-      nil_attendances.update_all(attendances_authentication_user: nil, authentication_state_attendances: nil)
+      nil_attendances.update_all(attendances_authentication_user: nil, authentication_state_attendances: nil, attendances_authentication: nil)
     end
     flash[:success] = "勤怠の承認に成功しました"
     redirect_to user_url(@user)
