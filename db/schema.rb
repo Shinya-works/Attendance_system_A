@@ -17,6 +17,8 @@ ActiveRecord::Schema.define(version: 20220131134513) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.string "note"
+    t.datetime "edit_started_at"
+    t.datetime "edit_finished_at"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -32,6 +34,7 @@ ActiveRecord::Schema.define(version: 20220131134513) do
     t.string "update_authentication"
     t.string "attendances_authentication"
     t.string "overwork_authentication"
+    t.string "edit_next_day"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

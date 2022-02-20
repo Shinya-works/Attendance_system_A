@@ -14,9 +14,25 @@ module AttendancesHelper
   end
   
   # 不正な値があるか確認する
+  def edit_attendances_invalid?
+    attendances = true
+    edit_attendances_params.each do |id, item|
+      if item[:edit_started_at].blank? && item[:edit_finished_at].blank?
+        next
+      elsif item[:edit_started_at].blank? || item[:edit_finished_at].blank?
+        attendances = false
+        break
+      elsif item[:edit_started_at] > item[:edit_finished_at]
+        attendances = false
+        break
+      end
+    end
+    return attendances
+  end
+
   def attendances_invalid?
     attendances = true
-    attendances_params.each do |id, item|
+    edit_attendances_params.each do |id, item|
       if item[:started_at].blank? && item[:finished_at].blank?
         next
       elsif item[:started_at].blank? || item[:finished_at].blank?
@@ -35,6 +51,12 @@ module AttendancesHelper
       overtime_hour = format("%.2f", (((expected_end_time - designated_work_end_time) / 60) / 60.0))
     else
       overtime_hour = format("%.2f", (((expected_end_time - designated_work_end_time) / 60) / 60.0))
+    end
+  end
+
+  def all_user_missing(missing_user_count, days)
+    if missing_user_count == days
+      flash[:danger] = "所属長を選択してください"
     end
   end
 end

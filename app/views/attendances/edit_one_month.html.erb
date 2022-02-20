@@ -25,13 +25,13 @@
                 <%= $days_of_the_week[day.worked_on.wday] %>
               </td>
               <% if (Date.current < day.worked_on) %>
-              <td><%= attendance.time_field :started_at, readonly: true, class: "form_control" %></td>
-              <td><%= attendance.time_field :finished_at, readonly: true, class: "form_control" %></td>
+              <td><%= attendance.time_field :edit_started_at, readonly: true, class: "form_control" %></td>
+              <td><%= attendance.time_field :edit_finished_at, readonly: true, class: "form_control" %></td>
               <% else %>
-              <td><%= attendance.time_field :started_at, class: "form_control" %></td>
-              <td><%= attendance.time_field :finished_at, class: "form_control" %></td>
+              <td><%= attendance.time_field :edit_started_at, class: "form_control" %></td>
+              <td><%= attendance.time_field :edit_finished_at, class: "form_control" %></td>
               <% end %>
-              <td><%= attendance.check_box %></td>
+              <td><%= f.check_box(:edit_next_day, {class: "form-control"}, checked_value='1', unchecked_value='0') %></td>
               <td>
                 <% if day.started_at.present? &&day.finished_at.present? %>
                   <%= str_times = working_times(day.started_at, day.finished_at) %>
@@ -39,7 +39,8 @@
                 <% end %>
               </td>
               <td><%= attendance.text_field :note, class: "form_control" %></td>
-              <td><%= attendance.select , { class: 'form-control' , required: true } %></td>
+              <td><%= attendance.select :edit_authentication_user, @users_arry, {include_blank: "選択してください"} %></td>
+              <%= f.hidden_field :authentication_state_edit, :value => "申請中" %>
             </tr>
           <% end %>
         <% end %>

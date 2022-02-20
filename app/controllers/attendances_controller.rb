@@ -14,13 +14,13 @@ class AttendancesController < ApplicationController
   def update
     # 出勤時間が未登録であることを判定します。
     if @attendance.started_at.nil?
-      if @attendance.update_attributes(started_at: Time.current.change(sec: 0))
+      if @attendance.update_attributes(started_at: Time.current.change(sec: 0), edit_started_at: Time.current.change(sec: 0))
         flash[:info] = "おはようございます！"
       else
         flash[:danger] = UPDATE_ERROR_MSG
       end
     elsif @attendance.finished_at.nil?
-      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0))
+      if @attendance.update_attributes(finished_at: Time.current.change(sec: 0), edit_finished_at: Time.current.change(sec: 0))
         flash[:info] = "お疲れ様でした。"
       else
         flash[:danger] = UPDATE_ERROR_MSG
@@ -30,17 +30,30 @@ class AttendancesController < ApplicationController
   end
   
   def edit_one_month
+    @users_arry = superiors_users_of_arry
   end
   
   def update_one_month
     ActiveRecord::Base.transaction do
-      if attendances_invalid?
-        attendances_params.each do |id, item|
-          attendance = Attendance.find(id)
-          attendance.update_attributes!(item)
+      if edit_attendances_invalid?
+        days = 0
+        missing_user_count = 0
+        edit_attendances_params.each do |id, item|
+          days += 1
+          unless item[:edit_authentication_user] == ""
+            attendance = Attendance.find(id)
+            attendance.update_attributes!(item)
+          else
+            missing_user_count += 1
+            all_user_missing(missing_user_count, days)
+          end
         end
-        flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
-        redirect_to user_url(date: params[:date])
+        unless flash[:danger] == "所属長を選択してください"
+          flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
+          redirect_to user_url(date: params[:date])
+        else
+          redirect_to attendances_edit_one_month_user_url(date: params[:date])
+        end
       else
         flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
         redirect_to attendances_edit_one_month_user_url(date: params[:date])
@@ -142,23 +155,14 @@ class AttendancesController < ApplicationController
   
   private
     
-    def attendances_params
+    def edit_attendances_params
       params.require(:user).permit(attendances: [
-        :started_at,
-        :finished_at,
+        :edit_started_at,
+        :edit_finished_at,
         :note,
-        :expected_end_time,
-        :next_day,
-        :overtime,
-        :business_processing_details,
-        :authentication_state_overwork,
-        :authentication_day,
-        :update_authentication,
-        :attendances_authentication,
+        :edit_next_day,
         :authentication_state_edit,
-        :authentication_state_attendances,
         :edit_authentication_user,
-        :overwork_authentication_user
         ])[:attendances]
     end
 
