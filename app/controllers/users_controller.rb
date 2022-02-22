@@ -26,6 +26,10 @@ before_action :set_one_month, only: :show
       attendances_authentication_user: current_user.name,
       authentication_state_attendances: "申請中"
       )
+    @edit_attendances = Attendance.includes(:user).where(
+      edit_authentication_user: current_user.name,
+      authentication_state_edit: "申請中"
+      )
     @overwork_attendances = Attendance.includes(:user).where(
       overwork_authentication_user: current_user.name,
       authentication_state_overwork: "申請中"

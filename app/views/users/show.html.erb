@@ -29,15 +29,23 @@
 
   <% if current_user.superiors %>
     <% if @authentication_attendances.count >= 1 %>
-      <%= link_to "【所属長承認申請のお知らせ】#{@authentication_attendances.count}件のお知らせがあります", attendances_authentication_user_attendances_path(@user),
-        remote: true, class: "border border-danger text text-danger" %>
+      <%= link_to "【所属長承認申請のお知らせ】#{@authentication_attendances.count}件のお知らせがあります",
+        attendances_authentication_user_attendances_path(@user), remote: true, class: "border border-danger text text-danger" %>
     <% else %>
       【所属長承認申請のお知らせ】
     <% end %>
     <p>
+      <% if @edit_attendances.count >= 1 %>
+        <%= link_to "【勤怠変更申請のお知らせ】#{@edit_attendances.count}件のお知らせがあります",
+          edit_attendances_authentication_user_attendances_path(@user), remote: true, class: "border border-danger text text-danger" %>
+      <% else %>
+        【勤怠変更申請のお知らせ】
+      <% end %>
+    </p>
+    <p>
       <% if @overwork_attendances.count >= 1 %>
-        <%= link_to "【残業申請のお知らせ】#{@overwork_attendances.count}件のお知らせがあります", overwork_authentication_user_attendances_path(@user), remote: true,
-          class: "border border-danger text text-danger" %>
+        <%= link_to "【残業申請のお知らせ】#{@overwork_attendances.count}件のお知らせがあります",
+          overwork_authentication_user_attendances_path(@user), remote: true, class: "border border-danger text text-danger" %>
       <% else %>
         【残業申請のお知らせ】
       <% end %>
