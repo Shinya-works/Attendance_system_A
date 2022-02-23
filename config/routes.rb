@@ -33,7 +33,7 @@ Rails.application.routes.draw do
         get 'overwork_authentication'
         patch 'update_overwork_authentication'
         get 'edit_attendances_authentication'
-        patch 'update_attendance_authentication'
+        patch 'edit_attendances_authentication_update'
       end
     end
   end

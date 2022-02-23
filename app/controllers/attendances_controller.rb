@@ -152,6 +152,35 @@ class AttendancesController < ApplicationController
     flash[:success] = "勤怠の承認に成功しました"
     redirect_to user_url(@user)
   end
+
+  def edit_attendances_authentication
+    @user = User.find(params[:user_id])
+    @users = User.includes(:attendances).where(attendances: {
+      edit_authentication_user: current_user.name,
+      authentication_state_edit: "申請中"
+      })
+    @attendances = Attendance.includes(:user).where(
+      edit_authentication_user: current_user.name,
+      authentication_state_edit: "申請中"
+      )
+  end
+
+  def edit_attendances_authentication_update
+    @user = User.find(params[:user_id])
+    edit_attendances_authentication_params.each do |id, item|
+      if item[:update_authentication] == "1"
+        attendance = Attendance.find(id)
+        unless item[:authentication_state_edit] == "申請中" || item[:authentication_state_edit] == "なし" 
+          attendance.update_attributes!(item)
+          attendance.update_attributes!(started_at: attendance.edit_started_at, finished_at: attendance.edit_finished_at)
+(byebug)
+        end
+        attendance.update!(note: nil, edit_authentication_user: nil, authentication_state_edit: nil, update_authentication: nil) if item[:authentication_state_edit] == "なし" 
+      end
+    end 
+    flash[:success] = "勤怠変更の承認に成功しました"
+    redirect_to user_url(@user)
+  end
   
   private
     
@@ -163,6 +192,8 @@ class AttendancesController < ApplicationController
         :edit_next_day,
         :authentication_state_edit,
         :edit_authentication_user,
+        :before_change_started_at,
+        :before_change_finished_at
         ])[:attendances]
     end
 
@@ -180,6 +211,10 @@ class AttendancesController < ApplicationController
 
     def attendances_authentication_params
       params.require(:user).permit(attendances: [:authentication_state_attendances, :attendances_authentication])[:attendances]
+    end
+
+    def edit_attendances_authentication_params
+      params.require(:user).permit(attendances: [:authentication_state_edit, :update_authentication])[:attendances]
     end
 
     def set_attendace

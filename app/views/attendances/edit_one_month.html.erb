@@ -31,7 +31,7 @@
               <td><%= attendance.time_field :edit_started_at, class: "form_control" %></td>
               <td><%= attendance.time_field :edit_finished_at, class: "form_control" %></td>
               <% end %>
-              <td><%= f.check_box(:edit_next_day, {class: "form-control"}, checked_value='1', unchecked_value='0') %></td>
+              <td><%= attendance.check_box(:edit_next_day, {class: "form-control"}, checked_value='1', unchecked_value='0') %></td>
               <td>
                 <% if day.started_at.present? &&day.finished_at.present? %>
                   <%= str_times = working_times(day.started_at, day.finished_at) %>
@@ -40,7 +40,9 @@
               </td>
               <td><%= attendance.text_field :note, class: "form_control" %></td>
               <td><%= attendance.select :edit_authentication_user, @users_arry, {include_blank: "選択してください"} %></td>
-              <%= f.hidden_field :authentication_state_edit, :value => "申請中" %>
+              <%= attendance.hidden_field :authentication_state_edit, :value => "申請中" %>
+              <%= attendance.hidden_field :before_change_started_at, :value => day.started_at %>
+              <%= attendance.hidden_field :before_change_finished_at, :value => day.finished_at %>
             </tr>
           <% end %>
         <% end %>

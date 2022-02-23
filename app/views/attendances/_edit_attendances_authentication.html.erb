@@ -10,29 +10,55 @@
     </div>
 
     <div class="modal-body">
-      <%= form_with(model: @user, url: update_attendances_authentication_user_attendances_path(@user),
+      <%= form_with(model: @user, url: edit_attendances_authentication_update_user_attendances_path(@user),
           local: true, method: :patch) do |f| %>
         <% @users.each do |user| %>
           <h2 class="center">【<%= user.name %>からの勤怠変更申請】</h2>
-          <table class="table table_bordered table_striped overtime_application_table">
+          <table class="table table-bordered table-condensed">
             <thead>
               <tr>
-                <th>月</th>			
-                <th>指示者確認印</th>
-                <th>変更</th>
-                <th>勤怠を確認する</th>
+                <th rowspan="3">日付</th>        
+                <th rowspan="3">曜日</th>
+                <th colspan="4">変更前</th>			
+                <th colspan="4">変更後</th>
+                <th rowspan="3">備考</th>
+                <th rowspan="3">指示者確認印</th>
+                <th rowspan="3">変更</th>
+                <th rowspan="3">勤怠を確認する</th>
+              </tr>
+              <tr>
+                <th colspan="2">出社</th>
+                <th colspan="2">退社</th>
+                <th colspan="2">出社</th>
+                <th colspan="2">退社</th>
+              </tr>
+              <tr>
+                <th>時</th>
+                <th>分</th>
+                <th>時</th>
+                <th>分</th>
               </tr>
             </thead>
             <tbody>
               <% @attendances.where(user_id: user.id).each do |attendance| %>
                 <%= f.fields_for "attendances[]", attendance do |fa| %>
                   <tr>
-                    <td><%= "#{attendance.worked_on.month}月" %></td>
-                    <td><%= fa.select(:authentication_state_attendances, ["なし", "申請中", "承認", "否認"],
-                      { prompt: "申請中" }, { id: "user_id", class: "user_class"}) %></td>
-                    <td><%= fa.check_box :attendances_authentication, {class: "form-control"}, checked_value='1', unchecked_value='0' %></td>
+                    <td><%= l(attendance.worked_on, format: :short) %></td>
+                    <td class=<%= "wday_#{attendance.worked_on.wday}"%>><%= $days_of_the_week[attendance.worked_on.wday] %></td>
+                    <td><%= attendance.started_at.hour if attendance.started_at.present? %></td>
+                    <td><%= min_round(attendance.started_at.min) if attendance.started_at.present? %></td>
+                    <td><%= attendance.edit_finished_at.hour if attendance.edit_finished_at.present? %></td>
+                    <td><%= min_round(attendance.edit_finished_at.min) if attendance.edit_finished_at.present? %></td>
+                    <td><%= attendance.edit_started_at.hour if attendance.edit_started_at.present? %></td>
+                    <td><%= min_round(attendance.edit_started_at.min) if attendance.edit_started_at.present? %></td>
+                    <td><%= attendance.edit_finished_at.hour if attendance.edit_finished_at.present? %></td>
+                    <td><%= min_round(attendance.edit_finished_at.min) if attendance.edit_finished_at.present? %></td>
+                    <td><%= attendance.note if attendance.note.present? %></td>
+                    <td><%= fa.select(:authentication_state_edit, ["申請中", "なし", "承認", "否認"],
+                      {}, { id: "user_id", class: "user_class"}) %></td>
+                    <td><%= fa.check_box :update_authentication, {class: "form-control"}, checked_value='1', unchecked_value='0' %></td>
                     <td><%= link_to "確認", attendances_confirmation_one_month_user_path(user), class: "btn btn_primary" %></td>
-                  </tr>
+                  </td>
                 <% end %>
               <% end %>
             </tbody>

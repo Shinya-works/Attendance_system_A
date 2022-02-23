@@ -121,10 +121,21 @@
             <td><%= day.business_processing_details if day.business_processing_details.present? %></td>
             <td>
               <%= day.overwork_authentication_user if day.overwork_authentication_user.present?%>
-              <% if day.authentication_state_overwork == "申請中" && day.authentication_state_overwork.present? %>
-                へ<%= day.authentication_state_overwork %>
-              <% else %>
-                <%= day.authentication_state_overwork %>
+              <% if day.authentication_state_overwork.present? %>
+                <% if day.authentication_state_overwork == "申請中"%>
+                  へ<%= day.authentication_state_overwork %>
+                <% else %>
+                  が<%= day.authentication_state_overwork %>
+                <% end %>
+              <% end %>
+              
+              <% if day.authentication_state_edit.present? %>
+                <% if day.authentication_state_edit == "承認"%>
+                  勤怠変更<%= day.authentication_state_edit %>済
+                <% elsif day.authentication_state_edit == "申請中"%>
+                <% else %>
+                  勤怠変更<%= day.authentication_state_edit %>
+                <% end %>
               <% end %>
             </td>
           </tr>
@@ -166,6 +177,7 @@
 </div>
 
 <!--モーダル表示-->
+<div id="edit_attendances_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="attendances_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="overwork_application" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="overwork_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
