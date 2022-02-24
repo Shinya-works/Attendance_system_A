@@ -54,6 +54,7 @@
 
   <div class="btn-edit-attendances">
     <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
+    <%= link_to "勤怠修正ログ（承認済み）", edit_attendances_log_user_attendances_path, class: "btn btn-primary" %>
   </div>
 
   <div>
@@ -181,3 +182,4 @@
 <div id="attendances_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="overwork_application" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="overwork_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit_attendances_log" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

@@ -1,0 +1,39 @@
+<% provide(:class_text, 'edit_attendances_log') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+          <h2 class="center">勤怠ログ</h2>
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>日付</th>        
+                <th>変更前出社時間</th>
+                <th>変更前退社時間</th>
+                <th>変更後出社時間</th>
+                <th>変更後退社時間</th>
+                <th>指示者</th>
+                <th>承認日</th>
+              </tr>
+            </thead>
+            <tbody>
+                  <tr>
+                    <td><%= "#{attendance.worked_on.year}-#{attendance.worked_on.month}-#{attendance.worked_on.day}" %></td>
+                    <td><%= l(attendance.before_change_started_at, format: :time) if attendance.before_change_started_at.present? %></td>
+                    <td><%= l(attendance.before_change_finished_at, format: :time) if attendance.before_change_finished_at.present? %></td>
+                    <td><%= l(attendance.started_at, format: :time) if attendance.started_at.present? %></td>
+                    <td><%= l(attendance.finished_at, format: :time) if attendance.finished_at.present? %></td>
+                    <td><%= attendance.edit_authentication_user %></td>
+                    <td><%= "#{attendance.updated_at.year}-#{attendance.updated_at.month}-#{attendance.updated_at.day}" %></td>
+                  </td>
+            </tbody>
+          </table>
+    </div>
+  </div>
+</div>

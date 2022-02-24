@@ -181,6 +181,14 @@ class AttendancesController < ApplicationController
     flash[:success] = "勤怠変更の承認に成功しました"
     redirect_to user_url(@user)
   end
+
+  def edit_attendances_log
+    
+  end
+
+  def edit_attendances_log_reset
+
+  end
   
   private
     
