@@ -184,21 +184,19 @@ class AttendancesController < ApplicationController
   def edit_attendances_log
     @user = User.find(params[:user_id])
     if params[:search].present? && params[:search2].present?
-      @attendances = @user.attendances.where(
-        "updated_at LIKE ? AND update_at LIKE ? ", "#{params[:search]}%", "____-#{params[:search2]}%",
+      attendances = @user.attendances.where(
+        "updated_at LIKE ? AND updated_at LIKE ? ", "#{params[:search]}%", "____-#{params[:search2]}%"
+      )
+      @attendances = attendances.where(
         attendances_log: "1",
         authentication_state_edit: "承認"
       )
     elsif @attendance.nil?
-      @attendances = @user.attendances.where(
-        'updated_at LIKE ?', "#{Date.current.year}-#{Date.current.month}%",
-        attendances_log: "1",
-        authentication_state_edit: "承認"
+      flash[:danger] = "年と月をどちらも入力してください" if params[:search].blank? || params[:search2].blank?
+      attendances = @user.attendances.where(
+        'updated_at LIKE ?', "#{Date.current.year}-#{Date.current.month}%"
       )
-    else
-      flash[:danger] = "年と月をどちらも入力してください"
-      @attendances = @user.attendances.where(
-        'updated_at LIKE ?', "#{Date.current.year}-#{Date.current.month}%",
+      @attendances = attendances.where(
         attendances_log: "1",
         authentication_state_edit: "承認"
       )
