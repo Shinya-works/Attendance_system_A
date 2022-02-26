@@ -173,7 +173,6 @@ class AttendancesController < ApplicationController
         unless item[:authentication_state_edit] == "申請中" || item[:authentication_state_edit] == "なし" 
           attendance.update_attributes!(item)
           attendance.update_attributes!(started_at: attendance.edit_started_at, finished_at: attendance.edit_finished_at)
-(byebug)
         end
         attendance.update!(note: nil, edit_authentication_user: nil, authentication_state_edit: nil, update_authentication: nil) if item[:authentication_state_edit] == "なし" 
       end
@@ -183,7 +182,27 @@ class AttendancesController < ApplicationController
   end
 
   def edit_attendances_log
-    
+    @user = User.find(params[:user_id])
+    if params[:search].present? && params[:search2].present?
+      @attendances = @user.attendances.where(
+        "updated_at LIKE ? AND update_at LIKE ? ", "#{params[:search]}%", "____-#{params[:search2]}%",
+        attendances_log: "1",
+        authentication_state_edit: "承認"
+      )
+    elsif @attendance.nil?
+      @attendances = @user.attendances.where(
+        'updated_at LIKE ?', "#{Date.current.year}-#{Date.current.month}%",
+        attendances_log: "1",
+        authentication_state_edit: "承認"
+      )
+    else
+      flash[:danger] = "年と月をどちらも入力してください"
+      @attendances = @user.attendances.where(
+        'updated_at LIKE ?', "#{Date.current.year}-#{Date.current.month}%",
+        attendances_log: "1",
+        authentication_state_edit: "承認"
+      )
+    end
   end
 
   def edit_attendances_log_reset

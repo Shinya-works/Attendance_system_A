@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20220131134513) do
     t.string "attendances_authentication"
     t.string "overwork_authentication"
     t.string "edit_next_day"
+    t.string "attendances_log"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

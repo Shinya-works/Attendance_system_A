@@ -5,5 +5,6 @@ class AddCheckboxToAttendances < ActiveRecord::Migration[5.1]
     add_column :attendances, :attendances_authentication, :string
     add_column :attendances, :overwork_authentication, :string
     add_column :attendances, :edit_next_day, :string
+    add_column :attendances, :attendances_log, :string
   end
 end
