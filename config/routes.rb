@@ -26,6 +26,7 @@ Rails.application.routes.draw do
         get 'overwork_application'
         patch 'update_overwork'
         patch 'attendances_application'
+        patch 'edit_attendances_log_reset', as: :log_reset
       end
       collection do
         get 'attendances_authentication'
@@ -35,7 +36,7 @@ Rails.application.routes.draw do
         get 'edit_attendances_authentication'
         patch 'edit_attendances_authentication_update'
         get 'edit_attendances_log'
-        patch 'edit_attendances_log_reset'
+        
       end
     end
   end

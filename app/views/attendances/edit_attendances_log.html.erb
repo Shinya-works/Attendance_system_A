@@ -11,10 +11,10 @@
     <div class="modal-body">
       <h2 class="center">勤怠ログ</h2>
       <div>
-        <%= link_to "リセット", edit_attendances_log_reset_user_attendances_path(@user), class: "btn btn-default" %>
+        <%= link_to "リセット", log_reset_user_attendance_path(@user, @attendances.first), method: :patch, class: "btn btn-default" %>
         <%= form_with url: edit_attendances_log_user_attendances_path(@user), method: :get, local: true do |f| %>
-          <%= f.date_select :search, {discard_day: true, discard_month: true} %>
-          <%= f.date_select :search2, {use_two_digit_numbers: true, discard_day: true, discard_year: true} %>
+          <%= f.select :search, [*Date.current.years_ago(10).year..Date.current.years_since(30).year], {} %>
+          <%= f.select :search2, ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], {} %>
           <%= f.submit "検索", name: nil, class: "btn btn-primary" %>
         <% end %>
       </div>

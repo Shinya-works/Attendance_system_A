@@ -183,16 +183,16 @@ class AttendancesController < ApplicationController
 
   def edit_attendances_log
     @user = User.find(params[:user_id])
-    if params[:search].present? && params[:search2].present?
+    if params[:search].present?
       attendances = @user.attendances.where(
-        "updated_at LIKE ? AND updated_at LIKE ? ", "#{params[:search]}%", "____-#{params[:search2]}%"
+        "updated_at LIKE ? ", "#{params[:search]}-#{params[:search2]}-__%"
       )
       @attendances = attendances.where(
         attendances_log: "1",
         authentication_state_edit: "承認"
       )
     elsif @attendance.nil?
-      flash[:danger] = "年と月をどちらも入力してください" if params[:search].blank? || params[:search2].blank?
+      flash[:danger] = "年と月をどちらも入力してください" if params[:search].present? || params[:search2].blank?
       attendances = @user.attendances.where(
         'updated_at LIKE ?', "#{Date.current.year}-#{Date.current.month}%"
       )
@@ -204,7 +204,10 @@ class AttendancesController < ApplicationController
   end
 
   def edit_attendances_log_reset
-
+    attendance = Attendance.find(params[:id]).worked_on
+    search_month = Attendance.where(worked_on: attendance.beginning_of_month..attendance.end_of_month)
+    reset_attendances
+(byebug)
   end
   
   private
@@ -239,7 +242,7 @@ class AttendancesController < ApplicationController
     end
 
     def edit_attendances_authentication_params
-      params.require(:user).permit(attendances: [:authentication_state_edit, :update_authentication])[:attendances]
+      params.require(:user).permit(attendances: [:authentication_state_edit, :update_authentication, :attendances_log])[:attendances]
     end
 
     def set_attendace

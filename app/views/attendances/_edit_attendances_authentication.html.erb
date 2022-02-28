@@ -58,6 +58,7 @@
                       {}, { id: "user_id", class: "user_class"}) %></td>
                     <td><%= fa.check_box :update_authentication, {class: "form-control"}, checked_value='1', unchecked_value='0' %></td>
                     <td><%= link_to "確認", attendances_confirmation_one_month_user_path(user), class: "btn btn_primary" %></td>
+                    <%= fa.hidden_field :attendances_log, :value => "1" %>
                   </td>
                 <% end %>
               <% end %>
