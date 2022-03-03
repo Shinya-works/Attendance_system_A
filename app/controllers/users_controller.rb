@@ -1,10 +1,11 @@
 class UsersController < ApplicationController
-before_action :set_user, only: [:show, :edit, :update, :destroy]  
-before_action :set_users, only: :index
-before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_work_info]  
-before_action :admin_or_correct_user, only: :show
-before_action :admin_user, only: [:index, :destroy, :edit_basic_work_info]
-before_action :set_one_month, only: :show
+  include AttendancesCsvModule
+  before_action :set_user, only: [:show, :edit, :update, :destroy]  
+  before_action :set_users, only: :index
+  before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_work_info]  
+  before_action :admin_or_correct_user, only: :show
+  before_action :admin_user, only: [:index, :destroy, :edit_basic_work_info]
+  before_action :set_one_month, only: :show
 
   def index
   end
@@ -34,6 +35,14 @@ before_action :set_one_month, only: :show
       overwork_authentication_user: current_user.name,
       authentication_state_overwork: "申請中"
       )
+    output_user = User.find(params[:id]).name
+    output_month = @attendances.first.worked_on.month
+    respond_to  do |format|
+      format.html
+      format.csv do
+        generate_csv(@attendances, output_user, output_month)
+      end
+    end
   end
 
   def new
