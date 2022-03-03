@@ -10,7 +10,7 @@ class User < ApplicationRecord
                     # 定義した条件で有効性を検証
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
-  validates :department, length: {in: 2..30}, allow_blank: true
+  validates :affiliation, length: {in: 2..30}, allow_blank: true
   # :passwordのハッシュ化と:password_confirmation使用可、authenticateメソッド使用可
   has_secure_password
   validates :password, presence: true, length: {minimum: 6}, allow_nil: true
@@ -50,10 +50,10 @@ class User < ApplicationRecord
   end
 
   def self.import(file)
-    CSV.foreach(file.path, headers: true) do |row|
+    CSV.foreach(file.path, headers: true, encoding: 'Shift_JIS:UTF-8') do |row|
       user = find_by(email: row["email"]) || new
       user.attributes = row.to_hash.slice(*updatable_attributes)
-      user.save!(validate: false)
+      user.save!
     end
   end
   
@@ -61,7 +61,7 @@ class User < ApplicationRecord
     [
       'name',
       'email',
-      'department',
+      'affiliation',
       'employee_number',
       'uid',
       'basic_work_time',

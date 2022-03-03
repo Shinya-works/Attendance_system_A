@@ -5,8 +5,8 @@
 <div class="container">
   <h1 class="title_h1">ユーザー一覧ページ</h1>
   <div>
-    <%= form_with url: import_users_path, multipart: true do |f| %>
-      <%= f.file_field :fine_name %>
+    <%= form_with url: import_users_path, method: :post, multipart: true do |f| %>
+      <%= f.file_field :file, {accepts: 'text/csv'} %>
       <%= f.submit "CSVをインポート", class: "btn btn-primary" %>
     <% end %>
   </div>
@@ -42,8 +42,8 @@
                         <%= f.label :email, class: "label-#{yield(:class_text)}" %>
                         <%= f.email_field :email, class: "form-control" %>
                         
-                        <%= f.label :department, class: "label-#{yield(:class_text)}" %>
-                        <%= f.text_field :department, class: "form-control" %>
+                        <%= f.label :affiliation, class: "label-#{yield(:class_text)}" %>
+                        <%= f.text_field :affiliation, class: "form-control" %>
                         
                         <%= f.label :password, class: "label-#{yield(:class_text)}" %>
                         <%= f.password_field :password, class: "form-control" %>

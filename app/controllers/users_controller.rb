@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   include AttendancesCsvModule
+  require 'csv'
   before_action :set_user, only: [:show, :edit, :update, :destroy]  
   before_action :set_users, only: :index
   before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_work_info]  
@@ -46,8 +47,14 @@ class UsersController < ApplicationController
   end
 
   def import
-    User.import(params[:fine_name])
-    redirect_to users_path
+    if params[:file].present?
+      User.import(params[:file])
+      flash[:success] = 'CSVファイルの読み込みに成功しました。'
+      redirect_to users_path
+    else
+      flash[:danger] = 'CSVファイルを選択してください。'
+      redirect_to users_path
+    end
   end
 
   def new
@@ -93,7 +100,7 @@ class UsersController < ApplicationController
   private
 
     def user_params
-      params.require(:user).permit(:name, :email, :password, :password_confirmation, :department,
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :affiliation,
         :employee_number, :uid, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
 end
