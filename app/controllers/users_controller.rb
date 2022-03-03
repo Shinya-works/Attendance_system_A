@@ -45,6 +45,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def import
+    User.import(params[:fine_name])
+    redirect_to users_path
+  end
+
   def new
     @user = User.new
   end

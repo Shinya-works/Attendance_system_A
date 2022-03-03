@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       get 'attendances/confirmation_one_month'
       get 'attendances/attendances_log'
     end
+    collection {post :import}
     resources :attendances, only: :update do
       member do
         get 'overwork_application'

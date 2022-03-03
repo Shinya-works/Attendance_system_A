@@ -4,8 +4,12 @@
 
 <div class="container">
   <h1 class="title_h1">ユーザー一覧ページ</h1>
-  
-
+  <div>
+    <%= form_with url: import_users_path, multipart: true do |f| %>
+      <%= f.file_field :fine_name %>
+      <%= f.submit "CSVをインポート", class: "btn btn-primary" %>
+    <% end %>
+  </div>
   <div class="col-md-10 col-md-offset-1">
     <table class="table table-condensed table-hover" id="table-users">
       <% @users.each do |user| %>
