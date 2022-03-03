@@ -42,6 +42,7 @@ class AttendancesController < ApplicationController
           days += 1
           unless item[:edit_authentication_user] == ""
             attendance = Attendance.find(id)
+            item[:edit_finished_at] = edit_next_day_calc(item[:edit_finished_at], item[:edit_next_day], item[:edit_started_at])
             attendance.update_attributes!(item)
           else
             missing_user_count += 1
@@ -185,29 +186,38 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:user_id])
     if params[:search].present?
       attendances = @user.attendances.where(
-        "updated_at LIKE ? ", "#{params[:search]}-#{params[:search2]}-__%"
-      )
+        "worked_on LIKE ? ", "#{params[:search]}-#{params[:search2]}-__%"
+        )
       @attendances = attendances.where(
         attendances_log: "1",
         authentication_state_edit: "承認"
-      )
+        )
+      @attendance = @attendances.first
     elsif @attendance.nil?
-      flash[:danger] = "年と月をどちらも入力してください" if params[:search].present? || params[:search2].blank?
-      attendances = @user.attendances.where(
-        'updated_at LIKE ?', "#{Date.current.year}-#{Date.current.month}%"
-      )
+      if params[:search].present? && params[:search2].blank?
+        flash[:danger] = "年と月をどちらも入力してください" 
+      end
+      current_one_month = Date.current.beginning_of_month..Date.current.end_of_month
+      
+      attendances = @user.attendances.where(worked_on: current_one_month)
       @attendances = attendances.where(
         attendances_log: "1",
         authentication_state_edit: "承認"
-      )
+        )
+      @attendance = @attendances.first
     end
   end
 
   def edit_attendances_log_reset
+    @user = User.find(params[:user_id])
     attendance = Attendance.find(params[:id]).worked_on
     search_month = Attendance.where(worked_on: attendance.beginning_of_month..attendance.end_of_month)
-    reset_attendances
-(byebug)
+    reset_attendances = search_month.where(
+      attendances_log: "1",
+      authentication_state_edit: "承認"
+    )
+    reset_attendances.update_all(attendances_log: nil)
+    redirect_to request.referer
   end
   
   private

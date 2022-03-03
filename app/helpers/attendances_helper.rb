@@ -19,6 +19,9 @@ module AttendancesHelper
     edit_attendances_params.each do |id, item|
       if item[:edit_started_at].blank? && item[:edit_finished_at].blank?
         next
+      elsif item[:edit_started_at] > item[:edit_finished_at] && item[:edit_next_day] == "1"
+        attendances = true
+        break
       elsif item[:edit_started_at].blank? || item[:edit_finished_at].blank?
         attendances = false
         break
@@ -57,6 +60,15 @@ module AttendancesHelper
   def all_user_missing(missing_user_count, days)
     if missing_user_count == days
       flash[:danger] = "所属長を選択してください"
+    end
+  end
+
+  def edit_next_day_calc(edit_finished_at, edit_next_day, edit_started_at)
+    if edit_next_day == "1" && edit_started_at > edit_finished_at
+      next_edit_finished_at = (edit_finished_at.to_datetime + 1) - Rational("9/24")
+      next_edit_finished_at.to_s
+    else
+      edit_finished_at
     end
   end
 end
