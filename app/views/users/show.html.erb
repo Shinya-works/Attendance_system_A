@@ -28,12 +28,35 @@
   </div>
 
   <% if current_user.superiors %>
-    <%= link_to "【所属長承認申請のお知らせ】", attendances_attendances_authentication_user_path,
-      remote: true, class: "border border-danger text text-danger" %>
+    <% if @authentication_attendances.count >= 1 %>
+      <%= link_to "【所属長承認申請のお知らせ】#{@authentication_attendances.count}件のお知らせがあります",
+        attendances_authentication_user_attendances_path(@user), remote: true, class: "border border-danger text text-danger" %>
+    <% else %>
+      【所属長承認申請のお知らせ】
+    <% end %>
+    <p>
+      <% if @edit_attendances.count >= 1 %>
+        <%= link_to "【勤怠変更申請のお知らせ】#{@edit_attendances.count}件のお知らせがあります",
+          edit_attendances_authentication_user_attendances_path(@user), remote: true, class: "border border-danger text text-danger" %>
+      <% else %>
+        【勤怠変更申請のお知らせ】
+      <% end %>
+    </p>
+    <p>
+      <% if @overwork_attendances.count >= 1 %>
+        <%= link_to "【残業申請のお知らせ】#{@overwork_attendances.count}件のお知らせがあります",
+          overwork_authentication_user_attendances_path(@user), remote: true, class: "border border-danger text text-danger" %>
+      <% else %>
+        【残業申請のお知らせ】
+      <% end %>
+    </p>
   <% end %>
 
   <div class="btn-edit-attendances">
     <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
+    <p>
+      <%= link_to "勤怠修正ログ（承認済み）", edit_attendances_log_user_attendances_path(@user), remote: true, class: "btn btn-primary" %>
+    </p>
   </div>
 
   <div>
@@ -72,7 +95,7 @@
       <tbody>
         <% @attendances.each do |day| %>
           <tr>
-            <td><%= link_to "残業申請", attendances_overwork_application_user_path, class: "btn btn-primary" %></td>
+            <td><%= link_to "残業申請", overwork_application_user_attendance_path(@user, day), remote: true, class: "btn btn-primary" %></td>
             <td><%= l(day.worked_on, format: :short) %></td>
             <td class=<%= "wday_#{day.worked_on.wday}"%>><%= $days_of_the_week[day.worked_on.wday] %></td>
             <td><%= day.started_at.hour if day.started_at.present? %></td>
@@ -93,11 +116,31 @@
             </td>
             <td><%= day.note if day.note.present? %></td>
           
-            <td><% day.expected_end_time.hour if day.expected_end_time.present? %></td>
-            <td><% day.expected_end_time.min if day.expected_end_time.present? %></td>
-            <td><% day.overtime if day.overtime.present? %></td>
-            <td><% day.business_processing_details if day.business_processing_details.present? %></td>
-            <td><% %></tr>
+            <td><%= day.expected_end_time.hour if day.expected_end_time.present? %></td>
+            <td><%= day.expected_end_time.min if day.expected_end_time.present? %></td>
+            <td><%=  calc_overwork_time(day.expected_end_time,
+                                        @user.designated_work_end_time,
+                                        day.next_day) if day.expected_end_time.present? %></td>
+            <td><%= day.business_processing_details if day.business_processing_details.present? %></td>
+            <td>
+              <%= day.overwork_authentication_user if day.overwork_authentication_user.present?%>
+              <% if day.authentication_state_overwork.present? %>
+                <% if day.authentication_state_overwork == "申請中"%>
+                  へ<%= day.authentication_state_overwork %>
+                <% else %>
+                  が<%= day.authentication_state_overwork %>
+                <% end %>
+              <% end %>
+              
+              <% if day.authentication_state_edit.present? %>
+                <% if day.authentication_state_edit == "承認"%>
+                  勤怠変更<%= day.authentication_state_edit %>済
+                <% elsif day.authentication_state_edit == "申請中"%>
+                <% else %>
+                  勤怠変更<%= day.authentication_state_edit %>
+                <% end %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
@@ -108,7 +151,28 @@
           <td colspan="6"></td>
           <td></td>
           <td colspan="5"></td>
-          <td><%= link_to "申請", "#", class: "btn btn-primary" %></td>
+          <td>
+          <div class="center">
+            <% if @attendances_authentication_month.authentication_state_attendances.present? %>
+              <% if @attendances_authentication_month.authentication_state_attendances == "申請中" %>
+                <%= "所属長#{@attendances_authentication_month.attendances_authentication_user}に#{@attendances_authentication_month.authentication_state_attendances}" %>
+              <% elsif @attendances_authentication_month.authentication_state_attendances == "承認" || "否認" %>
+                <%= "所属長#{@attendances_authentication_month.attendances_authentication_user}が#{@attendances_authentication_month.authentication_state_attendances}済" %>
+              <% end %>
+            <% end %>
+            <%= form_with(model: @attendances_authentication_month, url: attendances_application_user_attendance_path(@user,
+              @attendances_authentication_month), local: true, method: :patch) do |f| %>
+              <p>
+                <%= f.select(:attendances_authentication_user, @users_arry,
+                  { include_blank: "選択してください" }, { id: "user_id", class: "user_class"}) %>
+              </p>
+              <%= f.hidden_field :authentication_state_attendances, :value => "申請中" %>
+              <p>
+                <%= f.submit "申請", class: "btn btn-primary" %>
+              </p>
+            <% end %>
+          </div>
+          </td>
         </tr>
       </tfoot>
     </table>
@@ -116,5 +180,8 @@
 </div>
 
 <!--モーダル表示-->
-<div id="attendances_attendances_authentication_user" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-<div id="attendances_overwork_application" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit_attendances_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="attendances_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="overwork_application" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="overwork_authentication" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit_attendances_log" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

@@ -10,21 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220122171419) do
+ActiveRecord::Schema.define(version: 20220131134513) do
 
   create_table "attendances", force: :cascade do |t|
     t.date "worked_on"
     t.datetime "started_at"
     t.datetime "finished_at"
     t.string "note"
+    t.datetime "edit_started_at"
+    t.datetime "edit_finished_at"
+    t.datetime "before_change_started_at"
+    t.datetime "before_change_finished_at"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.time "expected_end_time"
-    t.time "overtime"
     t.string "business_processing_details"
-    t.string "authentication_user"
-    t.time "authentication_day"
+    t.string "overwork_authentication_user"
+    t.string "edit_authentication_user"
+    t.string "attendances_authentication_user"
+    t.string "authentication_state_overwork"
+    t.string "authentication_state_edit"
+    t.string "authentication_state_attendances"
+    t.string "next_day"
+    t.string "update_authentication"
+    t.string "attendances_authentication"
+    t.string "overwork_authentication"
+    t.string "edit_next_day"
+    t.string "attendances_log"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 

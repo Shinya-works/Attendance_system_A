@@ -9,63 +9,65 @@
   <div class="col-md-10 col-md-offset-1">
     <table class="table table-condensed table-hover" id="table-users">
       <% @users.each do |user| %>
-        <tr>
-          <td>
-            <%= link_to user.name, user %>
-            <p>
-              <%= link_to "削除", user, method: :delete,
-              data: { confirm: "削除してもよろしいですか。"},
-              class: "btn btn-primary" %>
-            </p>
-            <div class="panel-group">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4 class="panel-title">
-                    <button type="button" data-toggle="collapse" data-target="#collapse<%= user.id %>" 
-                      class="btn btn-primary btn-lg" aria-expanded="false">編集
-                    </button>
-                  </h4>
-                </div>
-                <div class="collapse panel-collapse" id="collapse<%= user.id %>">
-                  <div class="panel-body">
-                    <%= form_with(model: user, local: true) do |f| %>
-                      <%= render 'shared/error_messages', object: f.object %>
-                      
-                      <%= f.label :name, class: "label-#{yield(:class_text)}" %>
-                      <%= f.text_field :name, class: "form-control" %>
-                      
-                      <%= f.label :email, class: "label-#{yield(:class_text)}" %>
-                      <%= f.email_field :email, class: "form-control" %>
-                      
-                      <%= f.label :department, class: "label-#{yield(:class_text)}" %>
-                      <%= f.text_field :department, class: "form-control" %>
-                      
-                      <%= f.label :password, class: "label-#{yield(:class_text)}" %>
-                      <%= f.password_field :password, class: "form-control" %>
+        <% unless user.name == current_user.name %>
+          <tr>
+            <td>
+              <%= link_to user.name, user %>
+              <p>
+                <%= link_to "削除", user, method: :delete,
+                data: { confirm: "削除してもよろしいですか。"},
+                class: "btn btn-primary" %>
+              </p>
+              <div class="panel-group">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h4 class="panel-title">
+                      <button type="button" data-toggle="collapse" data-target="#collapse<%= user.id %>" 
+                        class="btn btn-primary btn-lg" aria-expanded="false">編集
+                      </button>
+                    </h4>
+                  </div>
+                  <div class="collapse panel-collapse" id="collapse<%= user.id %>">
+                    <div class="panel-body">
+                      <%= form_with(model: user, local: true) do |f| %>
+                        <%= render 'shared/error_messages', object: f.object %>
+                        
+                        <%= f.label :name, class: "label-#{yield(:class_text)}" %>
+                        <%= f.text_field :name, class: "form-control" %>
+                        
+                        <%= f.label :email, class: "label-#{yield(:class_text)}" %>
+                        <%= f.email_field :email, class: "form-control" %>
+                        
+                        <%= f.label :department, class: "label-#{yield(:class_text)}" %>
+                        <%= f.text_field :department, class: "form-control" %>
+                        
+                        <%= f.label :password, class: "label-#{yield(:class_text)}" %>
+                        <%= f.password_field :password, class: "form-control" %>
 
-                      <%= f.label :employee_number, class: "label-#{yield(:class_text)}" %>
-                      <%= f.text_field :employee_number, class: "form-control" %>
+                        <%= f.label :employee_number, class: "label-#{yield(:class_text)}" %>
+                        <%= f.text_field :employee_number, class: "form-control" %>
 
-                      <%= f.label :uid, class: "label-#{yield(:class_text)}" %>
-                      <%= f.text_field :uid, class: "form-control" %>
+                        <%= f.label :uid, class: "label-#{yield(:class_text)}" %>
+                        <%= f.text_field :uid, class: "form-control" %>
 
-                      <%= f.label :basic_work_time, class: "label-#{yield(:class_text)}" %>
-                      <%= f.time_field :basic_work_time, class: "form-control" %>
+                        <%= f.label :basic_work_time, class: "label-#{yield(:class_text)}" %>
+                        <%= f.time_field :basic_work_time, class: "form-control" %>
 
-                      <%= f.label :designated_work_start_time, class: "label-#{yield(:class_text)}" %>
-                      <%= f.time_field :designated_work_start_time, class: "form-control" %>
+                        <%= f.label :designated_work_start_time, class: "label-#{yield(:class_text)}" %>
+                        <%= f.time_field :designated_work_start_time, class: "form-control" %>
 
-                      <%= f.label :designated_work_end_time, class: "label-#{yield(:class_text)}" %>
-                      <%= f.time_field :designated_work_end_time, class: "form-control" %>
-                      
-                      <%= f.submit yield(:btn_text), class: "btn btn-primary btn-block label-#{yield(:class_text)}" %>
-                    <% end %>
-                  </div>  
+                        <%= f.label :designated_work_end_time, class: "label-#{yield(:class_text)}" %>
+                        <%= f.time_field :designated_work_end_time, class: "form-control" %>
+                        
+                        <%= f.submit yield(:btn_text), class: "btn btn-primary btn-block label-#{yield(:class_text)}" %>
+                      <% end %>
+                    </div>  
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
     </table>
   </div>

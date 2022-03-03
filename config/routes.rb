@@ -18,14 +18,27 @@ Rails.application.routes.draw do
       get 'attendances/list_of_employees'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
-      get 'attendances/attendances_authentication'
-      get 'attendances/edit_attendances_authentication'
-      get 'attendances/overwork_authentication'
-      get 'attendances/overwork_application'
-      patch 'attendances/update_overwork'
+      get 'attendances/confirmation_one_month'
       get 'attendances/attendances_log'
     end
-    resources :attendances, only: :update
+    resources :attendances, only: :update do
+      member do
+        get 'overwork_application'
+        patch 'update_overwork'
+        patch 'attendances_application'
+        patch 'edit_attendances_log_reset', as: :log_reset
+      end
+      collection do
+        get 'attendances_authentication'
+        patch 'update_attendances_authentication'
+        get 'overwork_authentication'
+        patch 'update_overwork_authentication'
+        get 'edit_attendances_authentication'
+        patch 'edit_attendances_authentication_update'
+        get 'edit_attendances_log'
+        
+      end
+    end
   end
   resources :bases, except: [:show]
 end

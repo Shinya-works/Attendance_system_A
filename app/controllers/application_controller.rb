@@ -11,6 +11,10 @@ class ApplicationController < ActionController::Base
   def set_user
     @user = User.find(params[:id])
   end
+
+  def set_users
+    @users = User.all
+  end
     
     # ログイン済みのユーザーか確認
   def logged_in_user
@@ -71,5 +75,11 @@ class ApplicationController < ActionController::Base
   rescue ActiveRecord::RecordInvalid
     flash[:danger] = "ページ情報の取得に失敗しました、再アクセスしてください。"
     redirect_to root_url
+  end
+
+  def superiors_users_of_arry
+    users = User.all.where(superiors: true)
+                  .where.not(name: current_user.name)
+    users.map { |user| user.name }
   end
 end

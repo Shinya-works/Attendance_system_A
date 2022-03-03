@@ -1,0 +1,54 @@
+<% provide(:class_text, 'edit_attendances_log') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <h2 class="center">勤怠ログ</h2>
+      <div>
+        <% if @attendances.blank?%>
+          <%= link_to "リセット", "#", disabled: true, class: "btn btn-default" %>
+        <% else %>
+          <%= link_to "リセット", log_reset_user_attendance_path(@user.id, @attendance), method: :patch, class: "btn btn-default" %>
+        <% end %>
+        <%= form_with url: edit_attendances_log_user_attendances_path(@user), method: :get do |f| %>
+          <%= f.select :search, [*Date.current.years_ago(10).year..Date.current.years_since(30).year], {} %>
+          <%= f.select :search2, ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"], {} %>
+          <%= f.submit "検索", name: nil, class: "btn btn-primary" %>
+        <% end %>
+      </div>
+      <% @attendances.each do |attendance| %>
+        <table class="table table-bordered table-condensed">
+          <thead>
+            <tr>
+              <th>日付</th>        
+              <th>変更前出社時間</th>
+              <th>変更前退社時間</th>
+              <th>変更後出社時間</th>
+              <th>変更後退社時間</th>
+              <th>指示者</th>
+              <th>承認日</th>
+            </tr>
+          </thead>
+          <tbody>
+                <tr>
+                  <td><%= "#{attendance.worked_on.year}-#{attendance.worked_on.month}-#{attendance.worked_on.day}" %></td>
+                  <td><%= l(attendance.before_change_started_at, format: :time) if attendance.before_change_started_at.present? %></td>
+                  <td><%= l(attendance.before_change_finished_at, format: :time) if attendance.before_change_finished_at.present? %></td>
+                  <td><%= l(attendance.started_at, format: :time) if attendance.started_at.present? %></td>
+                  <td><%= l(attendance.finished_at, format: :time) if attendance.finished_at.present? %></td>
+                  <td><%= attendance.edit_authentication_user %></td>
+                  <td><%= "#{attendance.updated_at.year}-#{attendance.updated_at.month}-#{attendance.updated_at.day}" %></td>
+                </td>
+          </tbody>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div id="edit_attendances_log" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

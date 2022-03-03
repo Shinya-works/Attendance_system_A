@@ -1,0 +1,100 @@
+<% provide(:title, @user.name) %>
+
+<div class="container-fluid">
+  <div class="row">
+    <table class="table table-bordered table-condensed user-table">
+      <tr>
+        <td>
+            <%= l(@first_day, format: :middle) %>時間管理表
+        </td>
+        <td colspan="3" class="table-active">
+          指定勤務開始時間  <%= format_basic_info(@user.designated_work_start_time) %><span class="br"></span>
+          指定勤務終了時間  <%= format_basic_info(@user.designated_work_end_time) %>
+        </td>
+        <td>基本時間：<%= format_basic_info(@user.basic_work_time) %></td>
+        <td>月初日<%= l(@first_day, format: :short) %></td>
+      </tr>
+      
+      <tr>
+        <td>所属<%= @user.department.present? ? @user.department : "未所属" %></td>
+        <td>氏名：<%= @user.name %></td>
+        <td>コード</td>
+        <td></td>
+        <td>出勤日数 <%= @worked_sum %>日</td>
+        <td>月初日<%= l(@last_day, format: :short) %></td>
+      </tr>
+    </table>
+  </div>
+
+  <div>
+    <table class="table table-bordered table-condensed table-hover" id="table-attendances">
+      <thead>
+        <tr>
+          <th rowspan="2"></th>
+          <th rowspan="3">日付</th>        
+          <th rowspan="3">曜日</th>
+          <th colspan="8">【実績】</th>
+          <th colspan="5">所定外勤務</th>
+        </tr>
+        <tr>
+          <th colspan="3">出社</th>
+          <th colspan="3">退社</th>
+          <th rowspan="2">在社時間</th>
+          <th rowspan="2">備考</th>
+          <th colspan="2">終了予定時間</th>
+          <th rowspan="2">時間外時間</th>
+          <th rowspan="2">業務処理内容</th>
+          <th rowspan="2">支持者確認㊞</th>
+        </tr>
+        <tr>
+          <th>残業申請</th>
+          <th>時</th>
+          <th>分</th>
+          <th></th>
+          <th>時</th>
+          <th>分</th>
+          <th></th>
+          <th>時</th>
+          <th>分</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <% @attendances.each do |day| %>
+          <tr>
+            <td><%= l(day.worked_on, format: :short) %></td>
+            <td class=<%= "wday_#{day.worked_on.wday}"%>><%= $days_of_the_week[day.worked_on.wday] %></td>
+            <td><%= day.started_at.hour if day.started_at.present? %></td>
+            <td><%= min_round(day.started_at.min) if day.started_at.present? %></td>
+            <td></td>
+            <td><%= day.finished_at.hour if day.finished_at.present? %></td>
+            <td><%= min_round(day.finished_at.min) if day.finished_at.present? %></td>
+            <td></td>
+            <td>
+              <% if day.started_at.present? &&day.finished_at.present? %>
+                <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes)) %>
+                <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+              <% end %>
+            </td>
+            <td><%= day.note if day.note.present? %></td>
+          
+            <td><%= day.expected_end_time.hour if day.expected_end_time.present? %></td>
+            <td><%= day.expected_end_time.min if day.expected_end_time.present? %></td>
+            <td><%=  calc_overwork_time(day.expected_end_time,
+                                        @user.designated_work_end_time,
+                                        day.next_day) if day.expected_end_time.present? %></td>
+            <td><%= day.business_processing_details if day.business_processing_details.present? %></td>
+            <td>
+              <%= day.authentication_user %>
+              <% if day.authentication_state == "申請中" %>
+                へ<%= day.authentication_state %>
+              <% else %>
+                <%= day.authentication_state %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,12 +1,12 @@
 class UsersController < ApplicationController
 before_action :set_user, only: [:show, :edit, :update, :destroy]  
+before_action :set_users, only: :index
 before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_work_info]  
 before_action :admin_or_correct_user, only: :show
 before_action :admin_user, only: [:index, :destroy, :edit_basic_work_info]
 before_action :set_one_month, only: :show
 
   def index
-    @users = User.all
   end
 
   def update_index_user
@@ -20,6 +20,20 @@ before_action :set_one_month, only: :show
   end
 
   def show
+    @users_arry = superiors_users_of_arry
+    @attendances_authentication_month = @attendances.first
+    @authentication_attendances = Attendance.includes(:user).where(
+      attendances_authentication_user: current_user.name,
+      authentication_state_attendances: "申請中"
+      )
+    @edit_attendances = Attendance.includes(:user).where(
+      edit_authentication_user: current_user.name,
+      authentication_state_edit: "申請中"
+      )
+    @overwork_attendances = Attendance.includes(:user).where(
+      overwork_authentication_user: current_user.name,
+      authentication_state_overwork: "申請中"
+      )
   end
 
   def new
@@ -67,9 +81,5 @@ before_action :set_one_month, only: :show
     def user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation, :department,
         :employee_number, :uid, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
-    end
-
-    def set_user
-      @user = User.find(params[:id])
     end
 end
