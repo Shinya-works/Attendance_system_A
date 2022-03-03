@@ -1,8 +1,9 @@
 module AttendancesCsvModule
   extend ActiveSupport::Concern
+  require 'csv'
 
   def generate_csv(attendances, output_user, output_month)
-    fileneme = "#{output_user}の勤怠一覧#{output_month}月分.csv"
+    filename = "#{output_user}の勤怠一覧#{output_month}月分.csv"
     set_csv_request_headers(filename)
 
     bom = "\uFEFF"
