@@ -1,11 +1,16 @@
 class AttendancesController < ApplicationController
   include AttendancesHelper
   include UsersHelper
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :confirmation_one_month]
-  before_action :set_user_id, only: [:update, :overwork_application, :update_overwork, :attendances_application]
-  before_action :logged_in_user, only: [:update, :edit_one_month, :confirmation_one_month]
-  before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :confirmation_one_month]
-  before_action :set_one_month, only: [:edit_one_month, :confirmation_one_month]
+  before_action :logged_in_user
+  before_action :admin_user, only: [:list_of_employees]
+  before_action :normal_user_or_superiors_user, except: [:list_of_employees]
+  before_action :id_correct_user, only: [:update_one_month, :edit_one_month]
+  before_action :user_id_correct_user, except: [:confirmation_one_month, :update_one_month, :edit_one_month, :list_of_employees]
+  before_action :superiors_user, except: [:update, :edit_one_month, :update_one_month, :overwork_application, :list_of_employees,
+    :update_overwork, :attendances_application, :edit_attendances_log, :edit_attendances_log_reset]
+  before_action :set_user, only: [:edit_one_month, :update_one_month]
+  before_action :set_user_id, only: [:update, :overwork_application, :update_overwork, :attendances_application, :confirmation_one_month]
+  before_action :set_one_month, only: [:edit_one_month, :update_one_month]
   before_action :set_attendace, only: [:update, :overwork_application, :update_overwork, :attendances_application]
   
   
@@ -36,10 +41,9 @@ class AttendancesController < ApplicationController
   def update_one_month
     ActiveRecord::Base.transaction do
       if edit_attendances_invalid?
-        days = 0
+        days = @attendances.count
         missing_user_count = 0
         edit_attendances_params.each do |id, item|
-          days += 1
           unless item[:edit_authentication_user] == ""
             attendance = Attendance.find(id)
             item[:edit_finished_at] = edit_next_day_calc(item[:edit_finished_at], item[:edit_next_day], item[:edit_started_at])
@@ -66,10 +70,15 @@ class AttendancesController < ApplicationController
   end
 
   def confirmation_one_month
+    set_confirmation_one_month(User.find(params[:user_id]), Attendance.find(params[:id]).worked_on)
+    @attendances_authentication_month = @attendances.first
   end
 
   def list_of_employees
-    @users = User.all.includes(:attendances)
+    @users = User.includes(:attendances).where(attendances: {
+      worked_on: Date.current,
+      finished_at: [nil, '']
+      })
   end
 
   def overwork_application

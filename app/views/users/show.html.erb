@@ -127,20 +127,23 @@
               <%= day.overwork_authentication_user if day.overwork_authentication_user.present?%>
               <% if day.authentication_state_overwork.present? %>
                 <% if day.authentication_state_overwork == "申請中"%>
-                  へ<%= day.authentication_state_overwork %>
+                  へ残業<%= day.authentication_state_overwork %>
                 <% else %>
-                  が<%= day.authentication_state_overwork %>
+                  が残業<%= day.authentication_state_overwork %>
                 <% end %>
               <% end %>
-              
-              <% if day.authentication_state_edit.present? %>
-                <% if day.authentication_state_edit == "承認"%>
-                  勤怠変更<%= day.authentication_state_edit %>済
-                <% elsif day.authentication_state_edit == "申請中"%>
-                <% else %>
-                  勤怠変更<%= day.authentication_state_edit %>
+              <p>
+                <%= day.edit_authentication_user if day.edit_authentication_user.present?%>
+                <% if day.authentication_state_edit.present? %>
+                  <% if day.authentication_state_edit == "承認"%>
+                    が勤怠変更<%= day.authentication_state_edit %>済
+                  <% elsif day.authentication_state_edit == "申請中"%>
+                    へ勤怠変更<%= day.authentication_state_edit %>
+                  <% else %>
+                    が勤怠変更<%= day.authentication_state_edit %>
+                  <% end %>
                 <% end %>
-              <% end %>
+              </p>
             </td>
           </tr>
         <% end %>

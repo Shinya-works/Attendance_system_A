@@ -31,7 +31,7 @@
                     <td><%= fa.select(:authentication_state_attendances, ["なし", "申請中", "承認", "否認"],
                       { prompt: "申請中" }, { id: "user_id", class: "user_class"}) %></td>
                     <td><%= fa.check_box :attendances_authentication, {class: "form-control"}, checked_value='1', unchecked_value='0' %></td>
-                    <td><%= link_to "確認", attendances_confirmation_one_month_user_path(user), class: "btn btn_primary" %></td>
+                    <td><%= link_to "確認", confirmation_one_month_user_attendance_path(user, attendance), class: "btn btn_primary" %></td>
                   </tr>
                 <% end %>
               <% end %>

@@ -1,8 +1,7 @@
 class BasesController < ApplicationController
+  before_action :logged_in_user
+  before_action :admin_user
   before_action :set_base, only: [:edit, :update, :destroy]  
-  before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_work_info]  
-  before_action :admin_or_correct_user, only: :show
-  before_action :admin_user, only: [:index, :destroy, :edit_basic_work_info]
 
   def index
     @bases = Base.all

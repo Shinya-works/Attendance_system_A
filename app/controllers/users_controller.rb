@@ -1,11 +1,13 @@
 class UsersController < ApplicationController
   include AttendancesCsvModule
   require 'csv'
+  before_action :logged_in_user, except: [:new, :create]
+  before_action :log_in_user, only: [:new]
+  before_action :id_correct_user, only: [:show, :edit, :update]
+  before_action :normal_user_or_superiors_user, only: [:show]
+  before_action :admin_user, except: [:new, :create, :edit, :update, :show]
   before_action :set_user, only: [:show, :edit, :update, :destroy]  
   before_action :set_users, only: :index
-  before_action :logged_in_user, only: [:index, :show, :edit, :update, :destroy, :edit_basic_work_info]  
-  before_action :admin_or_correct_user, only: :show
-  before_action :admin_user, only: [:index, :destroy, :edit_basic_work_info]
   before_action :set_one_month, only: :show
 
   def index

@@ -18,8 +18,6 @@ Rails.application.routes.draw do
       get 'attendances/list_of_employees'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
-      get 'attendances/confirmation_one_month'
-      get 'attendances/attendances_log'
     end
     collection {post :import}
     resources :attendances, only: :update do
@@ -28,6 +26,7 @@ Rails.application.routes.draw do
         patch 'update_overwork'
         patch 'attendances_application'
         patch 'edit_attendances_log_reset', as: :log_reset
+        get 'confirmation_one_month'
       end
       collection do
         get 'attendances_authentication'

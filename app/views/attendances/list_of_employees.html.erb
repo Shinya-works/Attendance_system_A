@@ -10,9 +10,7 @@
       </tr>
       <% @users.each do |user| %>
         <% user.attendances.each do |attendance| %>
-
-          <% if (Date.current == attendance.worked_on) &&
-            attendance.started_at != nil &&
+          <% if attendance.started_at.present? %>
             <tr>
               <td><%= user.employee_number %></td>
               <td><%= user.name %></td>

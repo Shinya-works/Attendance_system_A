@@ -53,7 +53,7 @@ module SessionsHelper
   
   def logged_in?
     # current_userメソッドを使用しそれがnilであった場合を否定している
-    !current_user.nil?
+    current_user != nil
   end
   
   def set_default_url

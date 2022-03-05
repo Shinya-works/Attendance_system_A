@@ -13,7 +13,7 @@
           <td>勤怠種類</td>
         </tr>
         <tr>
-          <td><%= link_to "修正", edit_basis_path(current_user), class: "btn btn-primary" %></td>
+          <td><%= link_to "修正", edit_basis_path(base.id), class: "btn btn-primary" %></td>
           <td>
             <%= link_to "削除", base, method: :delete,
             data: { confirm: "削除してもよろしいですか。"},

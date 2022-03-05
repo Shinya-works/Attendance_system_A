@@ -17,17 +17,19 @@ module AttendancesHelper
   def edit_attendances_invalid?
     attendances = true
     edit_attendances_params.each do |id, item|
-      if item[:edit_started_at].blank? && item[:edit_finished_at].blank?
-        next
-      elsif item[:edit_started_at] > item[:edit_finished_at] && item[:edit_next_day] == "1"
-        attendances = true
-        break
-      elsif item[:edit_started_at].blank? || item[:edit_finished_at].blank?
-        attendances = false
-        break
-      elsif item[:edit_started_at] > item[:edit_finished_at]
-        attendances = false
-        break
+      unless item[:edit_authentication_user] == ""
+        if item[:edit_started_at].blank? && item[:edit_finished_at].blank?
+          next
+        elsif item[:edit_started_at] > item[:edit_finished_at] && item[:edit_next_day] == "1"
+          attendances = true
+          break
+        elsif item[:edit_started_at].blank? || item[:edit_finished_at].blank?
+          attendances = false
+          break
+        elsif item[:edit_started_at] > item[:edit_finished_at]
+          attendances = false
+          break
+        end
       end
     end
     return attendances
@@ -71,4 +73,12 @@ module AttendancesHelper
       edit_finished_at
     end
   end
+
+  def set_confirmation_one_month(user, some_worked_on)
+    @first_day = some_worked_on.beginning_of_month
+    @last_day = @first_day.end_of_month
+    one_month = [*@first_day..@last_day]
+    @attendances = user.attendances.where(worked_on: @first_day..@last_day).order(:worked_on)
+  end
+
 end

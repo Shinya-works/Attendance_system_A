@@ -16,7 +16,6 @@
         <% unless user.name == current_user.name %>
           <tr>
             <td>
-              <%= link_to user.name, user %>
               <p>
                 <%= link_to "削除", user, method: :delete,
                 data: { confirm: "削除してもよろしいですか。"},

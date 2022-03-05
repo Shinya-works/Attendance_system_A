@@ -4,7 +4,6 @@
   <div class="row">
     <table class="table table-bordered table-condensed user-table">
       <tr>
-        <td>
             <%= l(@first_day, format: :middle) %>時間管理表
         </td>
         <td colspan="3" class="table-active">
@@ -21,7 +20,7 @@
         <td>コード</td>
         <td></td>
         <td>出勤日数 <%= @worked_sum %>日</td>
-        <td>月初日<%= l(@last_day, format: :short) %></td>
+        <td>月末日<%= l(@last_day, format: :short) %></td>
       </tr>
     </table>
   </div>
@@ -62,6 +61,7 @@
       <tbody>
         <% @attendances.each do |day| %>
           <tr>
+            <td></td>
             <td><%= l(day.worked_on, format: :short) %></td>
             <td class=<%= "wday_#{day.worked_on.wday}"%>><%= $days_of_the_week[day.worked_on.wday] %></td>
             <td><%= day.started_at.hour if day.started_at.present? %></td>
@@ -85,16 +85,50 @@
                                         day.next_day) if day.expected_end_time.present? %></td>
             <td><%= day.business_processing_details if day.business_processing_details.present? %></td>
             <td>
-              <%= day.authentication_user %>
-              <% if day.authentication_state == "申請中" %>
-                へ<%= day.authentication_state %>
-              <% else %>
-                <%= day.authentication_state %>
+              <%= day.overwork_authentication_user if day.overwork_authentication_user.present?%>
+              <% if day.authentication_state_overwork.present? %>
+                <% if day.authentication_state_overwork == "申請中"%>
+                  へ残業<%= day.authentication_state_overwork %>
+                <% else %>
+                  が残業申請<%= day.authentication_state_overwork %>
+                <% end %>
               <% end %>
+              <p>
+                <%= day.edit_authentication_user if day.edit_authentication_user.present?%>
+                <% if day.authentication_state_edit.present? %>
+                  <% if day.authentication_state_edit == "承認"%>
+                    が勤怠変更<%= day.authentication_state_edit %>済
+                  <% elsif day.authentication_state_edit == "申請中"%>
+                    へ勤怠変更<%= day.authentication_state_edit %>
+                  <% else %>
+                    が勤怠変更<%= day.authentication_state_edit %>
+                  <% end %>
+                <% end %>
+              </p>
             </td>
           </tr>
         <% end %>
       </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td colspan="2"></td>
+          <td colspan="6"></td>
+          <td></td>
+          <td colspan="5"></td>
+          <td>
+          <div class="center">
+            <% if @attendances_authentication_month.authentication_state_attendances.present? %>
+              <% if @attendances_authentication_month.authentication_state_attendances == "申請中" %>
+                <%= "所属長#{@attendances_authentication_month.attendances_authentication_user}に#{@attendances_authentication_month.authentication_state_attendances}" %>
+              <% elsif @attendances_authentication_month.authentication_state_attendances == "承認" || "否認" %>
+                <%= "所属長#{@attendances_authentication_month.attendances_authentication_user}が#{@attendances_authentication_month.authentication_state_attendances}済" %>
+              <% end %>
+            <% end %>
+          </div>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   </div>
 </div>

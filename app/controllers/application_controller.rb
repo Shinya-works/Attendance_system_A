@@ -31,29 +31,49 @@ class ApplicationController < ActionController::Base
     if logged_in?
       # logged_in_userにはじかれてページ遷移する前にそのページを保存
       store_location
-      flash[:danger] = "すでにログインしています。"
-      redirect_to root_url
+      flash[:success] = "ログイン中。"
+      redirect_to current_user
     end
   end
     
     # アクセスしたユーザーが現在ログインしているユーザーか確認します
-  def correct_user     
-    redirect_to root_url unless current_user?(@user)
+  def id_correct_user
+    unless current_user?(User.find(params[:id]))
+      flash[:danger] = "あなたはユーザー本人ではありません。"
+      redirect_to root_url 
+    end
+  end
+
+  def user_id_correct_user
+    unless current_user?(User.find(params[:user_id]))
+      flash[:danger] = "あなたはユーザー本人ではありません。"
+      redirect_to root_url 
+    end
   end
   
     # システム管理権限所有かどうか判定します。
   def admin_user
-    redirect_to root_url unless current_user.admin?
+    unless current_user.admin?
+      flash[:danger] = "あなたは管理権限者ではありません。"
+      redirect_to root_url 
+    end
+  end
+
+  def superiors_user
+    unless current_user.superiors?
+      flash[:danger] = "あなたは上長権限者ではありません。"
+      redirect_to root_url
+    end
   end
   
-  # 管理権限者、または現在ログインしているユーザーを許可します。
-    def admin_or_correct_user
-      @user = User.find(params[:user_id]) if @user.blank?
-      unless current_user?(@user) || current_user.admin?
-        flash[:danger] = "編集権限がありません。"
+  # 上長権限者もしくは一般ユーザーを許可します。
+    def normal_user_or_superiors_user
+      if current_user.admin?
+        flash[:danger] = "あなたは管理権限者です。"
         redirect_to(root_url)
       end  
     end
+
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month 
     @first_day = params[:date].nil? ?
