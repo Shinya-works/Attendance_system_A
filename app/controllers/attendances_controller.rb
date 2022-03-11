@@ -196,14 +196,11 @@ class AttendancesController < ApplicationController
     if params[:search].present?
       @attendance = @user.attendances.find_by(worked_on: "#{params[:search]}-#{params[:search2]}-01")
       unless @attendance.nil?
-byebug
         search_month = @user.attendances.where(worked_on: @attendance.worked_on.beginning_of_month..@attendance.worked_on.end_of_month)
-byebug
         @attendances = search_month.where(
           attendances_log: "1",
           authentication_state_edit: "承認"
           )
-byebug
       else
         @attendances = nil
         return
