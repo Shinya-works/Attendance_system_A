@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   resources :users do
     member do
-      patch 'update_index'
+      patch 'update_index_user'
       get 'attendances/list_of_employees'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'

@@ -33,7 +33,7 @@
                   </div>
                   <div class="collapse panel-collapse" id="collapse<%= user.id %>">
                     <div class="panel-body">
-                      <%= form_with(model: user, local: true) do |f| %>
+                      <%= form_with(model: user, url: update_index_user_user_path(user), local: true) do |f| %>
                         <%= render 'shared/error_messages', object: f.object %>
                         
                         <%= f.label :name, class: "label-#{yield(:class_text)}" %>

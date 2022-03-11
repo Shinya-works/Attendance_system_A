@@ -2,11 +2,11 @@ class UsersController < ApplicationController
   include AttendancesCsvModule
   require 'csv'
   before_action :logged_in_user, except: [:new, :create]
-  before_action :log_in_user, only: [:new]
+  before_action :log_in_user, only: [:new, :create]
   before_action :id_correct_user, only: [:show, :edit, :update]
   before_action :normal_user_or_superiors_user, only: [:show]
   before_action :admin_user, except: [:new, :create, :edit, :update, :show]
-  before_action :set_user, only: [:show, :edit, :update, :destroy]  
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :update_index_user]  
   before_action :set_users, only: :index
   before_action :set_one_month, only: :show
 
@@ -102,6 +102,10 @@ class UsersController < ApplicationController
   private
 
     def user_params
+      params.require(:user).permit(:name, :email, :password, :password_confirmation, :affiliation)
+    end
+
+    def index_user_params
       params.require(:user).permit(:name, :email, :password, :password_confirmation, :affiliation,
         :employee_number, :uid, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
     end
