@@ -204,7 +204,6 @@ class AttendancesController < ApplicationController
         @attendance = @attendances.first
       else
         @attendances = nil
-        @attendance = nil
       end
     elsif @attendance.nil?
       if params[:search].present? && params[:search2].blank?
