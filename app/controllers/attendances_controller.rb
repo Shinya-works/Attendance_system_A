@@ -195,7 +195,8 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:user_id])
     if params[:search].present?
       search = @user.attendances.where(worked_on: "#{params[:search]}-#{params[:search2]}-01")
-      unless search.nil
+      search = nil
+      unless search.nil?
         search_month = @user.attendances.where(worked_on: search.worked_on.beginning_of_month..search.worked_on.end_of_month)
         @attendances = search_month.where(
           attendances_log: "1",
@@ -204,6 +205,8 @@ class AttendancesController < ApplicationController
         @attendance = @attendances.first
       else
         @attendances = nil
+        return
+
       end
     elsif @attendance.nil?
       if params[:search].present? && params[:search2].blank?
