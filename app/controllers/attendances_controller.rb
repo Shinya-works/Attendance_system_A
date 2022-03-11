@@ -194,11 +194,9 @@ class AttendancesController < ApplicationController
   def edit_attendances_log
     @user = User.find(params[:user_id])
     if params[:search].present?
-      search_month = "#{params[:search]}-#{params[:search2]}"
-      attendances = @user.attendances.where(
-        "worked_on LIKE ? ", "%#{search_month}%"
-        )
-      @attendances = attendances.where(
+      search = @user.attendances.where(worked_on: "#{params[:search]}-#{params[:search2]}-01")
+      search_month = @user.attendances.where(worked_on: search.worked_on.beginning_of_month..search.worked_on.end_of_month)
+      @attendances = search_month.where(
         attendances_log: "1",
         authentication_state_edit: "承認"
         )
