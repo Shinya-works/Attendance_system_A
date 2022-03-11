@@ -77,7 +77,7 @@ class AttendancesController < ApplicationController
   def list_of_employees
     @users = User.includes(:attendances).where(attendances: {
       worked_on: Date.current,
-      finished_at: [nil, '']
+      finished_at: nil
       })
   end
 
@@ -194,8 +194,9 @@ class AttendancesController < ApplicationController
   def edit_attendances_log
     @user = User.find(params[:user_id])
     if params[:search].present?
+      search_month = "#{params[:search]}-#{params[:search2]}"
       attendances = @user.attendances.where(
-        "worked_on LIKE ? ", "#{params[:search]}-#{params[:search2]}%"
+        "worked_on LIKE ? ", "%#{search_month}%"
         )
       @attendances = attendances.where(
         attendances_log: "1",
