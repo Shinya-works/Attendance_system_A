@@ -195,7 +195,7 @@ class AttendancesController < ApplicationController
     @user = User.find(params[:user_id])
     if params[:search].present?
       attendances = @user.attendances.where(
-        "worked_on LIKE ? ", "#{params[:search]}-#{params[:search2]}-__%"
+        "worked_on LIKE ? ", "#{params[:search]}-#{params[:search2]}%"
         )
       @attendances = attendances.where(
         attendances_log: "1",
