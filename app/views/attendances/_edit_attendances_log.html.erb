@@ -10,7 +10,7 @@
     <div class="modal-body">
       <h2 class="center">勤怠ログ</h2>
       <div>
-        <% if @attendances.blank?%>
+        <% if @attendances.nil?%>
           <%= link_to "リセット", "#", disabled: true, class: "btn btn-default" %>
         <% else %>
           <%= link_to "リセット", log_reset_user_attendance_path(@user.id, @attendance), method: :patch, class: "btn btn-default" %>
@@ -21,7 +21,7 @@
           <%= f.submit "検索", name: nil, class: "btn btn-primary" %>
         <% end %>
       </div>
-      <% unless @attendances.blank?%>
+      <% unless @attendances.nil?%>
         <% @attendances.each do |attendance| %>
           <table class="table table-bordered table-condensed">
             <thead>
