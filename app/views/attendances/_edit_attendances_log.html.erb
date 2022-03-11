@@ -21,31 +21,33 @@
           <%= f.submit "検索", name: nil, class: "btn btn-primary" %>
         <% end %>
       </div>
-      <% @attendances.each do |attendance| %>
-        <table class="table table-bordered table-condensed">
-          <thead>
-            <tr>
-              <th>日付</th>        
-              <th>変更前出社時間</th>
-              <th>変更前退社時間</th>
-              <th>変更後出社時間</th>
-              <th>変更後退社時間</th>
-              <th>承認者</th>
-              <th>承認日</th>
-            </tr>
-          </thead>
-          <tbody>
-                <tr>
-                  <td><%= "#{attendance.worked_on.year}-#{attendance.worked_on.month}-#{attendance.worked_on.day}" %></td>
-                  <td><%= l(attendance.before_change_started_at, format: :time) if attendance.before_change_started_at.present? %></td>
-                  <td><%= l(attendance.before_change_finished_at, format: :time) if attendance.before_change_finished_at.present? %></td>
-                  <td><%= l(attendance.started_at, format: :time) if attendance.started_at.present? %></td>
-                  <td><%= l(attendance.finished_at, format: :time) if attendance.finished_at.present? %></td>
-                  <td><%= attendance.edit_authentication_user %></td>
-                  <td><%= "#{attendance.updated_at.year}-#{attendance.updated_at.month}-#{attendance.updated_at.day}" %></td>
-                </td>
-          </tbody>
-        </table>
+      <% if @attendances.blank?%>
+        <% @attendances.each do |attendance| %>
+          <table class="table table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>日付</th>        
+                <th>変更前出社時間</th>
+                <th>変更前退社時間</th>
+                <th>変更後出社時間</th>
+                <th>変更後退社時間</th>
+                <th>承認者</th>
+                <th>承認日</th>
+              </tr>
+            </thead>
+            <tbody>
+                  <tr>
+                    <td><%= "#{attendance.worked_on.year}-#{attendance.worked_on.month}-#{attendance.worked_on.day}" %></td>
+                    <td><%= l(attendance.before_change_started_at, format: :time) if attendance.before_change_started_at.present? %></td>
+                    <td><%= l(attendance.before_change_finished_at, format: :time) if attendance.before_change_finished_at.present? %></td>
+                    <td><%= l(attendance.started_at, format: :time) if attendance.started_at.present? %></td>
+                    <td><%= l(attendance.finished_at, format: :time) if attendance.finished_at.present? %></td>
+                    <td><%= attendance.edit_authentication_user %></td>
+                    <td><%= "#{attendance.updated_at.year}-#{attendance.updated_at.month}-#{attendance.updated_at.day}" %></td>
+                  </td>
+            </tbody>
+          </table>
+        <% end %>
       <% end %>
     </div>
   </div>
