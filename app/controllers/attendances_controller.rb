@@ -114,18 +114,21 @@ class AttendancesController < ApplicationController
     @overwork_state3_count = Attendance.where(authentication_state_overwork: "否認").count
     @overwork_state4_count = Attendance.where(authentication_state_overwork: "なし").count
     @user = User.find(params[:user_id])
+    attendances = Attendance.includes(:user).where(
+      overwork_authentication_user: current_user.name,
+      authentication_state_overwork: "申請中"
+      )
     not_update = 0
     overwork_authentication_params.each do |id, item|
-      not_update += 1
       if item[:overwork_authentication] == "1"
         attendance = Attendance.find(id)
         attendance.update_attributes!(item)
         nil_attendances = Attendance.where(authentication_state_overwork: "なし")
         nil_attendances.update_all(overwork_authentication_user: nil, business_processing_details: nil, expected_end_time: nil, authentication_state_overwork: nil)
       else
-        not_update -= 1
+        not_update += 1
       end
-      if not_update == 0
+      if (not_update - attendances.count) == 0 
         flash[:danger] = "変更のチェックが一つもありません"
         redirect_to user_url(@user)
         return
@@ -160,18 +163,21 @@ class AttendancesController < ApplicationController
 
   def update_attendances_authentication
     @user = User.find(params[:user_id])
+    attendances = Attendance.includes(:user).where(
+      attendances_authentication_user: current_user.name,
+      authentication_state_attendances: "申請中"
+      )
     not_update = 0
     attendances_authentication_params.each do |id, item|
-      not_update += 1
       if item[:attendances_authentication] == "1"
         attendance = Attendance.find(id)
         attendance.update_attributes!(item)
         nil_attendances = Attendance.where(authentication_state_attendances: "なし")
         nil_attendances.update_all(attendances_authentication_user: nil, authentication_state_attendances: nil, attendances_authentication: nil)
       else
-        not_update -= 1
+        not_update += 1
       end
-      if not_update == 0
+      if (not_update - attendances.count) == 0 
         flash[:danger] = "変更のチェックが一つもありません"
         redirect_to user_url(@user)
         return
@@ -195,9 +201,12 @@ class AttendancesController < ApplicationController
 
   def edit_attendances_authentication_update
     @user = User.find(params[:user_id])
+    attendances = Attendance.includes(:user).where(
+      edit_authentication_user: current_user.name,
+      authentication_state_edit: "申請中"
+      )
     not_update = 0
     edit_attendances_authentication_params.each do |id, item|
-      not_update += 1
       if item[:update_authentication] == "1"
         attendance = Attendance.find(id)
         unless item[:authentication_state_edit] == "申請中" || item[:authentication_state_edit] == "なし" 
@@ -206,9 +215,9 @@ class AttendancesController < ApplicationController
         end
         attendance.update!(note: nil, edit_authentication_user: nil, authentication_state_edit: nil, update_authentication: nil) if item[:authentication_state_edit] == "なし" 
       else
-        not_update -= 1
+        not_update += 1
       end
-      if not_update == 0
+      if (not_update - attendances.count) == 0 
         flash[:danger] = "変更のチェックが一つもありません"
         redirect_to user_url(@user)
         return
